@@ -1,5 +1,4 @@
-use crate::main;
-
+use crate::game::*;
 #[test]
 fn add2test() 
 {

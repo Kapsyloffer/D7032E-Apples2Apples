@@ -1,19 +1,22 @@
-struct player
+
+#[allow(dead_code)]
+pub struct Player
 {
-    player_ID : i32,
+    player_id : i32,
     is_bot : bool,
     online : bool,
     //connection : socket,
     //inFromClient : BufferedReader,
     //outToClient : DataOutputStream,
-    hand : Vec,
-    green_apples : Vec,
-}  
+    hand : Vec<String>,
+    green_apples : Vec<String>,
+}
 
-impl player
+impl Player
 {
-    fn foo() -> i32
+    #[allow(dead_code)]
+    fn do_stuff()
     {
-        return 0;
+        todo!();
     }
 }
