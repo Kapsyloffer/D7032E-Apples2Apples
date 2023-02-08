@@ -7,11 +7,6 @@ pub fn player_factory (id : i32, is_bot : bool, online: bool) -> player::Player
 }
 
 #[allow(dead_code)]
-pub fn add2(b : i32) -> i32
-{
-    return b+2;
-}
-
 fn game_setup()
 {
     //1. Read all of the green apples
@@ -28,6 +23,7 @@ fn game_setup()
     //TODO: duh
 }
 
+#[allow(dead_code)]
 fn gameplay()
 {
     //6. A green apple is drawn from the pile and shown to everyone

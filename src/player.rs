@@ -1,6 +1,4 @@
-use std::clone;
-
-use crate::card::GreenCard;
+use crate::card::*;
 #[allow(dead_code)]
 pub struct Player
 {
@@ -22,6 +20,7 @@ impl Player
         todo!();
     }
 
+    #[allow(dead_code)]
     fn get_hand(&self) -> Vec<GreenCard>
     {
         let mut e : Vec<GreenCard> = self.hand.clone();
