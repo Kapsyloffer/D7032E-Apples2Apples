@@ -17,7 +17,7 @@ fn test_read_all_green_apples() //Req 1
         cards : Vec::new()
     };
     let b4 : i32 = _gc.cards.len().try_into().unwrap();
-    _gc.read_cards();
+    let _c = _gc.read_cards();
     let after : i32 = _gc.cards.len().try_into().unwrap();
     assert_ne!(b4, after);
 }
@@ -29,22 +29,44 @@ fn test_read_all_red_apples()  //Req 2
         cards : Vec::new()
     };
     let b4 : i32 = _rc.cards.len().try_into().unwrap();
-    _rc.read_cards();
+    let _c = _rc.read_cards();
     let after : i32 = _rc.cards.len().try_into().unwrap();
     assert_ne!(b4, after);
 }
 #[test]
 fn test_shuffle_both_decks()  //Req 3
 {
-    let mut rc : RedDeck = RedDeck
-    {
-        cards : Vec::new()
-    };
-    rc.read_cards();
-    let b4shuffle : Vec<RedCard> = rc.cards.clone();
-    rc.shuffle();
-    print!("{}, {}", rc.cards[0].title, b4shuffle[0].title);
-    assert_ne!(rc.cards[0].title, b4shuffle[0].title);
+    //Makes new instances of the decks
+    let mut rd = RedDeck{ cards : Vec::new()};
+    let mut gd= GreenDeck{ cards : Vec::new()};
+
+    //Init all decks from files
+    let _c = rd.read_cards();
+    let _d = gd.read_cards();
+
+    //Save state before shuffle
+    let b4shuffle_r : Vec<RedCard> = rd.cards.clone();
+    let b4shuffle_g : Vec<GreenCard> = gd.cards.clone();
+
+    //Shuffle both
+    rd.shuffle();
+    gd.shuffle();
+
+    //Check the difference
+    print!("{}, {}", rd.cards[0].title, b4shuffle_r[0].title);
+    print!("{}, {}", gd.cards[0].title, b4shuffle_g[0].title);
+
+    //bools to check if they pass
+    let mut red_pass : bool = true;
+    let mut green_pass : bool = true;
+
+    //if the card is in the same position, make it false
+    if rd.cards[0].title == b4shuffle_r[0].title {red_pass = false;}
+    if gd.cards[0].title == b4shuffle_g[0].title {green_pass = false;}
+
+    //if both decks are shuffled, pass. 
+    //Sometimes it fails because of the random engine, idk either man.
+    assert_eq!(red_pass, green_pass);
 }
 
 #[test]

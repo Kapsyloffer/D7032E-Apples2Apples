@@ -49,7 +49,23 @@ impl Setup for GreenDeck
 
     fn shuffle (&mut self)
     {
-        todo!()
+        //Fisher Yates shuffle algorithm
+        let mut deck : Vec<GreenCard> = self.cards.clone();
+        let size : u8 = self.cards.len() as u8;
+
+        for i in 0..size
+        {   
+            //Select last element
+            let j : GreenCard = deck.pop().unwrap();
+            //rnd [0 -> size-i]
+            let rnd : u8 = rand::thread_rng().gen_range(0..(size-i));
+            //Switch element[size] with element[size-i]
+            let k : GreenCard = deck[usize::from(rnd)].clone();
+            deck[usize::from(rnd)] = j;
+            deck.push(k);
+        }
+        //Set the current deck to the shuffled deck.
+        self.cards = deck;
     }
 
     fn deal (&mut self)
@@ -106,6 +122,10 @@ impl Setup for RedDeck
 
     fn deal (&mut self)
     {
+        //Access each players hand
+        //View size of hand
+        //give n cards where n = 7-x (x is cards in hand)
+        //Do the same for the next player in the list.
         todo!()
     }
 }
