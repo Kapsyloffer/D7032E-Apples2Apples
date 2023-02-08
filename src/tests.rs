@@ -53,25 +53,17 @@ fn test_shuffle_both_decks()  //Req 3
     gd.shuffle();
 
     //Check the difference
-    print!("{}, {}", rd.cards[0].get_title(), b4shuffle_r[0].get_title());
-    print!("{}, {}", gd.cards[0].get_title(), b4shuffle_g[0].get_title());
-
-    //bools to check if they pass
-    let mut red_pass : bool = true;
-    let mut green_pass : bool = true;
-
-    //if the card is in the same position, make it false
-    if rd.cards[0].get_title() == b4shuffle_r[0].get_title() {red_pass = false;}
-    if gd.cards[0].get_title() == b4shuffle_g[0].get_title() {green_pass = false;}
-
-    //if both decks are shuffled, pass. 
     //Sometimes it fails because of the random engine, idk either man.
-    assert_eq!(red_pass, green_pass);
+    assert_ne!(rd.cards[0].get_title(), b4shuffle_r[0].get_title());
+    assert_ne!(gd.cards[0].get_title(), b4shuffle_g[0].get_title())
 }
 
 #[test]
 fn test_deal7_red_apples_to_each_player()  //Req 4
 {
+    //ny spelare 1 och 2 och 3, de har 2, 5, och 7 kort respectively.
+    //kör en refillHands()
+    //Har alla 7?
     assert_eq!(1, 0);
 }
 

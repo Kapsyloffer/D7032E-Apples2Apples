@@ -1,4 +1,5 @@
 use crate::card::*;
+use crate::player::Player;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
 use rand::Rng;
@@ -7,7 +8,6 @@ pub trait Setup
 {
     fn read_cards (&mut self) -> io::Result<String>;
     fn shuffle (&mut self);
-    fn deal (&mut self);
 }
 
 #[allow(dead_code)]
@@ -20,6 +20,11 @@ pub struct RedDeck
 pub struct GreenDeck
 {
     pub cards : Vec<GreenCard>
+}
+
+pub struct Discard
+{
+    pub cards : Vec<RedCard>
 }
 
 impl Setup for GreenDeck
@@ -66,11 +71,6 @@ impl Setup for GreenDeck
         }
         //Set the current deck to the shuffled deck.
         self.cards = deck;
-    }
-
-    fn deal (&mut self)
-    {
-        todo!()
     }
 }
 
@@ -119,13 +119,20 @@ impl Setup for RedDeck
         //Set the current deck to the shuffled deck.
         self.cards = deck;
     }
+}
 
-    fn deal (&mut self)
+impl RedDeck
+{
+    fn _deal (&mut self, player_list : Vec<Player>)
     {
         //Access each players hand
-        //View size of hand
-        //give n cards where n = 7-x (x is cards in hand)
-        //Do the same for the next player in the list.
+        for _p in player_list
+        {
+            //View size of hand
+            
+            //give n cards where n = 7-x (x is cards in hand)
+            //Do the same for the next player in the list.
+        }
         todo!()
     }
 }

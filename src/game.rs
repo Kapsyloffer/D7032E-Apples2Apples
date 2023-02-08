@@ -1,4 +1,6 @@
 use crate::player;
+use crate::deck::*;
+use crate::card::*;
 #[allow(dead_code)]
 #[allow(unused_variables)]
 pub fn player_factory (id : i32, is_bot : bool, online: bool) -> player::Player
@@ -6,21 +8,28 @@ pub fn player_factory (id : i32, is_bot : bool, online: bool) -> player::Player
     todo!()
 }
 
-#[allow(dead_code)]
+#[allow(unreachable_code)]
 fn game_setup()
 {
+    //Create all the decks
+    let mut r_deck = RedDeck{cards: Vec::new()};
+    let mut g_deck = GreenDeck{cards: Vec::new()};
+    let mut d_deck = Discard{cards: Vec::new()}; //Discard
     //1. Read all of the green apples
     //2. Read all of the red apples 
+    r_deck.read_cards();
+    g_deck.read_cards();
     //TODO: Maybe create a deck.rs and read in there under a fn init?
 
     //3. Shuffle both of the decks 
-    //TODO: Deck.shuffle()
+    r_deck.shuffle();
+    g_deck.shuffle();
 
     //4. Deal 7 red apples to each player
-    //TODO: duh
+    //TODO: foreach player, add to playerlist, send playerlist into deck and do the deal.
 
     //5. Pick a judge at random.
-    //TODO: duh
+    //TODO: player_list[rnd(1..size)] eller nåt
 }
 
 #[allow(dead_code)]
