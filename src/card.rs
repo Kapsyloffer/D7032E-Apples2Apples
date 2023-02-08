@@ -4,13 +4,14 @@ pub trait CardTraits
     fn get_desc(&self) -> String;
     fn print_card(&self);
 }
+#[derive(Clone)]
 pub struct GreenCard
 {
     pub title: String,
     pub desc : String
 }
 
-#[allow(dead_code)]
+#[derive(Clone)]
 pub struct RedCard
 {
     pub title: String,

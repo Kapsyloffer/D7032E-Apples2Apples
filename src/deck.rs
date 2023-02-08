@@ -1,6 +1,7 @@
 use crate::card::*;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
+use rand::Rng;
 
 pub trait Setup
 {
@@ -82,9 +83,25 @@ impl Setup for RedDeck
         Ok("Red Deck made".to_string())
     }
 
-    fn shuffle (&mut self)
+    fn shuffle (&mut self)  
     {
-        todo!()
+        //Fisher Yates shuffle algorithm
+        let mut deck : Vec<RedCard> = self.cards.clone();
+        let size : u8 = self.cards.len().try_into().unwrap();
+
+        for i in 0..size
+        {   
+            //Select last element
+            let j : RedCard = deck.pop().unwrap();
+            //rnd [0 -> size-i]
+            let rnd : u8 = rand::thread_rng().gen_range(0..(size-i));
+            //Switch element[size] with element[size-i]
+            let k : RedCard = deck[usize::from(rnd)].clone();
+            deck[usize::from(rnd)] = j;
+            deck.push(k);
+        }
+        //Set the current deck to the shuffled deck.
+        self.cards = deck;
     }
 
     fn deal (&mut self)

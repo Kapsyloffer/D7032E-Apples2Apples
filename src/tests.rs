@@ -36,7 +36,15 @@ fn test_read_all_red_apples()  //Req 2
 #[test]
 fn test_shuffle_both_decks()  //Req 3
 {
-    assert_eq!(1, 0);
+    let mut rc : RedDeck = RedDeck
+    {
+        cards : Vec::new()
+    };
+    rc.read_cards();
+    let b4shuffle : Vec<RedCard> = rc.cards.clone();
+    rc.shuffle();
+    print!("{}, {}", rc.cards[0].title, b4shuffle[0].title);
+    assert_ne!(rc.cards[0].title, b4shuffle[0].title);
 }
 
 #[test]
