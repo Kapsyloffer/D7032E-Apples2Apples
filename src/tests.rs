@@ -10,109 +10,123 @@ use crate::deck::*;
 #[cfg(test)]
 //SETUP
 #[test]
-fn test1_read_all_green_apples() 
+fn test_read_all_green_apples() //Req 1
 {
-    assert_eq!(1, 1);
+    let mut _gc : GreenDeck = GreenDeck
+    {
+        cards : Vec::new()
+    };
+    let b4 : i32 = _gc.cards.len().try_into().unwrap();
+    _gc.read_cards();
+    let after : i32 = _gc.cards.len().try_into().unwrap();
+    assert_ne!(b4, after);
 }
 #[test]
-fn test2_read_all_red_apples() 
+fn test_read_all_red_apples()  //Req 2
 {
-    assert_eq!(1, 1);
+    let mut _rc : RedDeck = RedDeck
+    {
+        cards : Vec::new()
+    };
+    let b4 : i32 = _rc.cards.len().try_into().unwrap();
+    _rc.read_cards();
+    let after : i32 = _rc.cards.len().try_into().unwrap();
+    assert_ne!(b4, after);
 }
 #[test]
-fn test3_shuffle_both_decks() 
+fn test_shuffle_both_decks()  //Req 3
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test4_deal7_red_apples_to_each_player() 
+fn test_deal7_red_apples_to_each_player()  //Req 4
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test5_pick_a_judge_at_random() 
+fn test_pick_a_judge_at_random()  //Req 5
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 //GAMEPLAY
 
 #[test]
-fn test6_green_apple_drawn_and_shown_to_everyone() 
+fn test_green_apple_drawn_and_shown_to_everyone()  //Req 6
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test7_judge_do_not_play_red_apple() 
+fn test_judge_do_not_play_red_apple()  //Req 7
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test8_order_of_cards_random_before_shown() 
+fn test_order_of_cards_random_before_shown()  //Req 8
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test9_all_players_must_play_before_result_is_shown() 
+fn test_all_players_must_play_before_result_is_shown()  //Req 9
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test10_judge_picks_card_winner_gets_green_apple() 
+fn test_judge_picks_card_winner_gets_green_apple()  //Req 10
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test11_all_red_apples_go_to_discard() 
+fn test_all_red_apples_go_to_discard()  //Req 11
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test12_all_players_draw_up_to_seven() 
+fn test_all_players_draw_up_to_seven()  //Req 12
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test13_next_player_in_list_becomes_judge() 
+fn test_next_player_in_list_becomes_judge()  //Req 13
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test14_4p_check_for_winner() 
+fn test_4p_check_for_winner()  //Req 14
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test14_5p_check_for_winner() 
+fn test_5p_check_for_winner() 
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test14_6p_check_for_winner() 
+fn test_6p_check_for_winner() 
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test14_7p_check_for_winner() 
+fn test_7p_check_for_winner() 
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }
 
 #[test]
-fn test14_8plus_check_for_winner() 
+fn test_8plus_check_for_winner() 
 {
-    assert_eq!(1, 1);
+    assert_eq!(1, 0);
 }

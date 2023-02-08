@@ -8,7 +8,7 @@ pub struct Player
     //connection : socket,
     //inFromClient : BufferedReader,
     //outToClient : DataOutputStream,
-    hand : Vec<GreenCard>,
+    hand : Vec<RedCard>,
     green_apples : Vec<GreenCard>,
 }
 
@@ -18,16 +18,5 @@ impl Player
     fn do_stuff(&self)
     {
         todo!();
-    }
-
-    #[allow(dead_code)]
-    fn get_hand(&self) -> Vec<GreenCard>
-    {
-        let mut e : Vec<GreenCard> = self.hand.clone();
-        if e.is_empty()
-        {
-            e = Vec::<GreenCard>::new();
-        }
-        e
     }
 }
