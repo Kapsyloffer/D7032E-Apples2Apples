@@ -87,7 +87,7 @@ impl Setup for RedDeck
     {
         //Fisher Yates shuffle algorithm
         let mut deck : Vec<RedCard> = self.cards.clone();
-        let size : u8 = self.cards.len().try_into().unwrap();
+        let size : u8 = self.cards.len() as u8;
 
         for i in 0..size
         {   
