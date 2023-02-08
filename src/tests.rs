@@ -16,9 +16,9 @@ fn test_read_all_green_apples() //Req 1
     {
         cards : Vec::new()
     };
-    let b4 : i32 = _gc.cards.len().try_into().unwrap();
+    let b4 : i32 = _gc.cards.len() as i32;
     let _c = _gc.read_cards();
-    let after : i32 = _gc.cards.len().try_into().unwrap();
+    let after : i32 = _gc.cards.len() as i32;
     assert_ne!(b4, after);
 }
 #[test]
@@ -28,9 +28,9 @@ fn test_read_all_red_apples()  //Req 2
     {
         cards : Vec::new()
     };
-    let b4 : i32 = _rc.cards.len().try_into().unwrap();
+    let b4 : i32 = _rc.cards.len() as i32;
     let _c = _rc.read_cards();
-    let after : i32 = _rc.cards.len().try_into().unwrap();
+    let after : i32 = _rc.cards.len() as i32;
     assert_ne!(b4, after);
 }
 #[test]
