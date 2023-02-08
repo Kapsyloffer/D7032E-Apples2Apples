@@ -53,16 +53,16 @@ fn test_shuffle_both_decks()  //Req 3
     gd.shuffle();
 
     //Check the difference
-    print!("{}, {}", rd.cards[0].title, b4shuffle_r[0].title);
-    print!("{}, {}", gd.cards[0].title, b4shuffle_g[0].title);
+    print!("{}, {}", rd.cards[0].get_title(), b4shuffle_r[0].get_title());
+    print!("{}, {}", gd.cards[0].get_title(), b4shuffle_g[0].get_title());
 
     //bools to check if they pass
     let mut red_pass : bool = true;
     let mut green_pass : bool = true;
 
     //if the card is in the same position, make it false
-    if rd.cards[0].title == b4shuffle_r[0].title {red_pass = false;}
-    if gd.cards[0].title == b4shuffle_g[0].title {green_pass = false;}
+    if rd.cards[0].get_title() == b4shuffle_r[0].get_title() {red_pass = false;}
+    if gd.cards[0].get_title() == b4shuffle_g[0].get_title() {green_pass = false;}
 
     //if both decks are shuffled, pass. 
     //Sometimes it fails because of the random engine, idk either man.

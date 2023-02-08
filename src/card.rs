@@ -2,7 +2,6 @@ pub trait CardTraits
 {   
     fn get_title(&self) -> String;
     fn get_desc(&self) -> String;
-    fn print_card(&self);
 }
 #[derive(Clone)]
 pub struct GreenCard
@@ -21,32 +20,24 @@ pub struct RedCard
 #[allow(dead_code)]
 impl CardTraits for GreenCard
 {
-    fn print_card(&self)
-    {
-        println!("Green:\n{}\n{}\n", &self.title, &self.desc);
-    }
     fn get_title(&self) -> String 
     {
-        todo!()
+        self.title.clone()
     }
     fn get_desc(&self) -> String 
     {
-        todo!()
+        self.desc.clone()
     }
 }
 
 impl CardTraits for RedCard
 {
-    fn print_card(&self)
-    {
-        println!("RED:\n{}\n{}\n", &self.title, &self.desc);
-    }
     fn get_title(&self) -> String 
     {
-        todo!()
+        self.title.clone()
     }
     fn get_desc(&self) -> String 
     {
-        todo!()
+        self.desc.clone()
     }
 }
