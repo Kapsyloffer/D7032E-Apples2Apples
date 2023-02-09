@@ -1,13 +1,16 @@
-use crate::player;
+use crate::player::*;
 use crate::deck::*;
 use crate::card::*;
-#[allow(dead_code)]
-#[allow(unused_variables)]
-pub fn player_factory (id : i32, is_bot : bool, online: bool) -> player::Player
-{
-    todo!()
-}
 
+pub fn init_game()
+{
+    game_setup();
+    //plyaerlist
+    //host
+    //setup
+    //gameplay
+    //idk
+}
 #[allow(unreachable_code)]
 fn game_setup()
 {
@@ -25,9 +28,16 @@ fn game_setup()
     r_deck.shuffle();
     g_deck.shuffle();
 
+    println!("{}", r_deck.cards.len().to_string());
+    println!("{}", g_deck.cards.len().to_string());
+
     //4. Deal 7 red apples to each player
     //TODO: foreach player, add to playerlist, send playerlist into deck and do the deal.
-
+    //try discard
+   /* for x in 1..10
+    {
+        d_deck.cards.push(r_deck.cards.remove(0))
+    }*/
     //5. Pick a judge at random.
     //TODO: player_list[rnd(1..size)] eller nåt
 }
@@ -50,4 +60,14 @@ fn gameplay()
     • For 6 players, 6 green apples win.
     • For 7 players, 5 green apples win.
     • For 8+ players, 4 green apples win.*/
+}
+
+pub fn refill_hand(mut p : Player, mut red_deck : Vec<RedCard>) -> Player
+{
+    while p.get_hand_size() < 7
+    {
+        let top_card = red_deck.remove(0);
+        p.add_to_hand(top_card);
+    }
+    p
 }

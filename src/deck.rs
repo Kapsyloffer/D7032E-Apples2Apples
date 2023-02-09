@@ -96,6 +96,8 @@ impl Setup for RedDeck
         self.cards.clear();
         self.cards = new_deck;
 
+        println!("Red deck ready, SIZE: {}", self.cards.len());
+
         Ok("Red Deck made".to_string())
     }
 
