@@ -20,8 +20,8 @@ fn game_setup()
     let mut _d_deck = Discard{cards: Vec::new()}; //Discard
     //1. Read all of the green apples
     //2. Read all of the red apples 
-    r_deck.read_cards();
-    g_deck.read_cards();
+    let _q = r_deck.read_cards();
+    let _q = g_deck.read_cards();
     //TODO: Maybe create a deck.rs and read in there under a fn init?
 
     //3. Shuffle both of the decks 

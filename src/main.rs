@@ -1,4 +1,4 @@
-use apples::card::*;
+//use apples::card::*;
 use apples::deck::*;
 use apples::game::*;
 fn main() 
@@ -8,7 +8,7 @@ fn main()
         cards : Vec::new()
     };
 
-    rc.read_cards();
+    let _q = rc.read_cards();
 
     println!("Red: {}\n", rc.cards.len().to_string());
     println!("Hello world!");

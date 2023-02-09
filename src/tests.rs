@@ -74,13 +74,13 @@ fn test_deal7_red_apples_to_each_player()  //Req 4
     //Create 4 players with empty hands
     for x in 1..4
     {
-       let mut p : Player = player_factory(x, false, true);
+       let p : Player = player_factory(x, false, true);
        p_list.push(p);
     }
 
     let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
     //Generate a dummy deck for refilling
-    for d in 0.. (p_list.len() * 7)
+    for _d in 0.. (p_list.len() * 7)
     {
         let dummy_card = RedCard{title: "Dummy card".to_string(), desc: "Fill card".to_string()};
         dummy_deck.add_to_deck(dummy_card);
@@ -165,7 +165,7 @@ fn test_all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we sta
 
     let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
     //Generate a dummy deck for refilling
-    for d in 0.. (p_list.len() * 7)
+    for _d in 0.. (p_list.len() * 7)
     {
         let dummy_card = RedCard{title: "Dummy card".to_string(), desc: "Fill card".to_string()};
         dummy_deck.add_to_deck(dummy_card);
