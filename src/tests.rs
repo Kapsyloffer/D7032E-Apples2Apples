@@ -61,18 +61,11 @@ fn test_deal7_red_apples_to_each_player()  //Req 4
 {
     //ny spelare 1 och 2 och 3, de har 2, 5, och 7 kort respectively.
     let mut p_list : Vec<Player> = Vec::new();
-    //Create 4 players
+    //Create 4 players with empty hands
     for x in 1..4
     {
        let mut p : Player = player_factory(x, false, true);
-       //give each player a random hand of 0 to 7 cards
-        for _x in 1..rand::thread_rng().gen_range(1..7) 
-        {
-            let new_card = RedCard{title: "Test".to_string(), desc : "Testcard".to_string()};
-            p.add_to_hand(new_card);
-        }
-        println!("I, player: {}, have this many cards: {} \n", x.to_string(), p.get_hand_size().to_string());
-        p_list.push(p);
+       p_list.push(p);
     }
 
     let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
@@ -143,9 +136,44 @@ fn test_all_red_apples_go_to_discard()  //Req 11
 }
 
 #[test]
-fn test_all_players_draw_up_to_seven()  //Req 12
+fn test_all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we start with cards in hand)
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    //Create 4 players
+    for x in 1..4
+    {
+       let mut p : Player = player_factory(x, false, true);
+       //give each player a random hand of 0 to 7 cards
+        for _x in 1..rand::thread_rng().gen_range(1..7) 
+        {
+            let new_card = RedCard{title: "Test".to_string(), desc : "Testcard".to_string()};
+            p.add_to_hand(new_card);
+        }
+        println!("I, player: {}, have this many cards: {} \n", x.to_string(), p.get_hand_size().to_string());
+        p_list.push(p);
+    }
+
+    let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
+    //Generate a dummy deck for refilling
+    for d in 0.. (p_list.len() * 7)
+    {
+        let dummy_card = RedCard{title: "Dummy card".to_string(), desc: "Fill card".to_string()};
+        dummy_deck.add_to_deck(dummy_card);
+    }
+
+    for p in 0..p_list.len()
+    {
+        let mut dummy_p = p_list[p].clone();
+        dummy_p = refill_hand(dummy_p, dummy_deck.clone());
+        p_list.remove(0);
+        p_list.push(dummy_p);
+    }
+
+    for p in 0..p_list.len()
+    {
+        println!("I, player: {}, have this many cards: {} \n", p.to_string(), p_list[p].get_hand_size().to_string());
+        assert_eq!(p_list[p].get_hand_size(), 7);
+    }
 }
 
 #[test]
