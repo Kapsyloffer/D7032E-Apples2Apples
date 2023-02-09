@@ -62,7 +62,7 @@ fn gameplay()
     • For 8+ players, 4 green apples win.*/
 }
 
-pub fn refill_hand(mut p : Player, mut red_deck : Vec<RedCard>) -> Player
+pub fn refill_hand(mut p : Player, mut red_deck : Vec<RedCard>) -> Player //TODO: Change to REDDECK
 {
     while p.get_hand_size() < 7
     {
