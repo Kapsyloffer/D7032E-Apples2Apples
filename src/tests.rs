@@ -4,6 +4,8 @@ use crate::player::*;
 use crate::card::*;
 use crate::deck::*;    
 use rand::Rng;
+use core::hash::*;
+use std::hash::Hash;
 
 #[cfg(test)]
 //SETUP
@@ -52,8 +54,16 @@ fn test_shuffle_both_decks()  //Req 3
 
     //Check the difference
     //Sometimes it fails because of the random engine, idk either man.
-    assert_ne!(rd.cards[0].get_title(), b4shuffle_r[0].get_title());
-    assert_ne!(gd.cards[0].get_title(), b4shuffle_g[0].get_title())
+    assert_ne!(hash_value(b4shuffle_r), hash_value(rd.cards));
+    assert_ne!(hash_value(b4shuffle_g), hash_value(gd.cards));
+}
+
+//used for the test above.
+fn hash_value<T: Hash>(deck: T) -> u64 
+{
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    deck.hash(&mut hasher);
+    hasher.finish()
 }
 
 #[test]

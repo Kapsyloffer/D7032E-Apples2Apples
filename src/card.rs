@@ -4,6 +4,7 @@ pub trait CardTraits
     fn get_desc(&self) -> String;
 }
 #[derive(Clone)]
+#[derive(Hash)]
 pub struct GreenCard
 {
     pub title: String,
@@ -11,6 +12,7 @@ pub struct GreenCard
 }
 
 #[derive(Clone)]
+#[derive(Hash)]
 pub struct RedCard
 {
     pub title: String,
