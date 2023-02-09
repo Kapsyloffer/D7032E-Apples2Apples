@@ -11,6 +11,7 @@ pub trait Setup
 }
 
 #[allow(dead_code)]
+#[derive(Clone)]
 pub struct RedDeck
 {
     pub cards : Vec<RedCard>
@@ -78,9 +79,10 @@ impl Setup for RedDeck
 {
     fn read_cards (&mut self) -> io::Result<String>
     {
-        let mut new_deck : Vec<RedCard> = Vec::new();
         let file = File::open("txt_files/redApples.txt")?;
         let reader = BufReader::new(file);
+        //Clear the deck so it doesn't duplicate
+        self.cards.clear();
         for line in reader.lines()
         {
             //let mut title_and_desc : Vec![&str] = line.split("-");
@@ -89,12 +91,8 @@ impl Setup for RedDeck
                 title: line.unwrap(),
                 desc: "pending".to_string()
             };
-            new_deck.push(new_red);
+            self.add_to_deck(new_red);
         }
-
-        //Reset deck and add the new cards 
-        self.cards.clear();
-        self.cards = new_deck;
 
         println!("Red deck ready, SIZE: {}", self.cards.len());
 
@@ -136,5 +134,13 @@ impl RedDeck
             //Do the same for the next player in the list.
         }
         todo!()
+    }
+}
+
+impl RedDeck
+{
+    pub fn add_to_deck(&mut self, rc: RedCard)
+    {
+        self.cards.push(rc);
     }
 }

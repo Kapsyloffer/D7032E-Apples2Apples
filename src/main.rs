@@ -3,14 +3,14 @@ use apples::deck::*;
 use apples::game::*;
 fn main() 
 {
-    let mut _rc: RedDeck = RedDeck
+    let mut rc: RedDeck = RedDeck
     {
         cards : Vec::new()
     };
 
-    _rc.read_cards();
+    rc.read_cards();
 
-    println!("Red: {}\n", _rc.cards.len().to_string());
+    println!("Red: {}\n", rc.cards.len().to_string());
     println!("Hello world!");
     init_game();
 }

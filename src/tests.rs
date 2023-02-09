@@ -66,7 +66,7 @@ fn test_deal7_red_apples_to_each_player()  //Req 4
     {
        let mut p : Player = player_factory(x, false, true);
        //give each player a random hand of 0 to 7 cards
-        for x in 1..rand::thread_rng().gen_range(1..7) 
+        for _x in 1..rand::thread_rng().gen_range(1..7) 
         {
             let new_card = RedCard{title: "Test".to_string(), desc : "Testcard".to_string()};
             p.add_to_hand(new_card);
@@ -75,12 +75,12 @@ fn test_deal7_red_apples_to_each_player()  //Req 4
         p_list.push(p);
     }
 
-    let mut dummy_deck : Vec<RedCard> = Vec::new();
+    let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
     //Generate a dummy deck for refilling
     for d in 0.. (p_list.len() * 7)
     {
         let dummy_card = RedCard{title: "Dummy card".to_string(), desc: "Fill card".to_string()};
-        dummy_deck.push(dummy_card);
+        dummy_deck.add_to_deck(dummy_card);
     }
 
     for p in 0..p_list.len()

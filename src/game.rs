@@ -1,6 +1,6 @@
 use crate::player::*;
 use crate::deck::*;
-use crate::card::*;
+//use crate::card::*;
 
 pub fn init_game()
 {
@@ -17,7 +17,7 @@ fn game_setup()
     //Create all the decks
     let mut r_deck = RedDeck{cards: Vec::new()};
     let mut g_deck = GreenDeck{cards: Vec::new()};
-    let mut d_deck = Discard{cards: Vec::new()}; //Discard
+    let mut _d_deck = Discard{cards: Vec::new()}; //Discard
     //1. Read all of the green apples
     //2. Read all of the red apples 
     r_deck.read_cards();
@@ -62,11 +62,11 @@ fn gameplay()
     • For 8+ players, 4 green apples win.*/
 }
 
-pub fn refill_hand(mut p : Player, mut red_deck : Vec<RedCard>) -> Player //TODO: Change to REDDECK
+pub fn refill_hand(mut p : Player, mut red_deck : RedDeck) -> Player //TODO: Change to REDDECK
 {
     while p.get_hand_size() < 7
     {
-        let top_card = red_deck.remove(0);
+        let top_card = red_deck.cards.remove(0);
         p.add_to_hand(top_card);
     }
     p
