@@ -41,13 +41,13 @@ impl PlayerActions for Player
     fn get_green_amount (&self) -> u8 
     {
         let greens : u8 = self.green_apples.len() as u8;
-        greens
+        return greens;
     }
 
     fn get_hand_size(&self) -> u8 
     {
         let handsize : u8 = self.hand.len() as u8;
-        handsize
+        return handsize;
     }
 
     fn get_id(&self) -> i32
@@ -74,5 +74,5 @@ pub fn player_factory (id : i32, bot : bool, o: bool) -> Player
         hand : Vec::new(),
         green_apples : Vec::new(),
     };
-    p
+    return p;
 }

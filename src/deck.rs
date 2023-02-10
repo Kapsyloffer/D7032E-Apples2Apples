@@ -84,7 +84,7 @@ impl Setup for RedDeck
         self.cards.clear();
         for line in reader.lines()
         {
-            //let mut title_and_desc : Vec![&str] = line.split("-");
+            //let mut title_and_desc = line.split("-");
             let new_red = RedCard
             {
                 title: line.unwrap(),
