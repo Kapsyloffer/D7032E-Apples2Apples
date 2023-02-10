@@ -1,5 +1,4 @@
 use crate::card::*;
-use crate::player::Player;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
 use rand::Rng;
@@ -50,7 +49,7 @@ impl Setup for GreenDeck
         self.cards.clear();
         self.cards = new_deck;
 
-        Ok("Green Deck made".to_string())
+        return Ok("Green Deck made".to_string());
     }
 
     fn shuffle (&mut self)
@@ -96,7 +95,7 @@ impl Setup for RedDeck
 
         println!("Red deck ready, SIZE: {}", self.cards.len());
 
-        Ok("Red Deck made".to_string())
+        return Ok("Red Deck made".to_string());
     }
 
     fn shuffle (&mut self)  
@@ -123,22 +122,12 @@ impl Setup for RedDeck
 
 impl RedDeck
 {
-    fn _deal (&mut self, player_list : Vec<Player>)
+    pub fn draw (&mut self) -> RedCard
     {
-        //Access each players hand
-        for _p in player_list
-        {
-            //View size of hand
-            
-            //give n cards where n = 7-x (x is cards in hand)
-            //Do the same for the next player in the list.
-        }
-        todo!()
+        let card = self.cards.remove(0);
+        return card;
     }
-}
 
-impl RedDeck
-{
     pub fn add_to_deck(&mut self, rc: RedCard)
     {
         self.cards.push(rc);

@@ -10,7 +10,7 @@ use std::hash::Hash;
 #[cfg(test)]
 //SETUP
 #[test]
-fn test_read_all_green_apples() //Req 1
+fn read_all_green_apples() //Req 1
 {
     let mut _gc : GreenDeck = GreenDeck
     {
@@ -22,7 +22,7 @@ fn test_read_all_green_apples() //Req 1
     assert_ne!(b4, after);
 }
 #[test]
-fn test_read_all_red_apples()  //Req 2
+fn read_all_red_apples()  //Req 2
 {
     let mut _rc : RedDeck = RedDeck
     {
@@ -34,7 +34,7 @@ fn test_read_all_red_apples()  //Req 2
     assert_ne!(b4, after);
 }
 #[test]
-fn test_shuffle_both_decks()  //Req 3
+fn shuffle_both_decks()  //Req 3
 {
     //Makes new instances of the decks
     let mut rd = RedDeck{ cards : Vec::new()};
@@ -67,7 +67,7 @@ fn hash_value<T: Hash>(deck: T) -> u64
 }
 
 #[test]
-fn test_deal7_red_apples_to_each_player()  //Req 4
+fn deal7_red_apples_to_each_player()  //Req 4
 {
     //ny spelare 1 och 2 och 3, de har 2, 5, och 7 kort respectively.
     let mut p_list : Vec<Player> = Vec::new();
@@ -102,51 +102,73 @@ fn test_deal7_red_apples_to_each_player()  //Req 4
 }
 
 #[test]
-fn test_pick_a_judge_at_random()  //Req 5
+fn pick_a_judge_at_random()  //Req 5
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    //Create 5 dummy players
+    for x in 0..4
+    {
+        p_list.push(player_factory(x, false, true));
+    }
+
+    let mut prev_p = judge_pick(&p_list);
+    let mut cur_p : Player;
+    //Try 10 times, probability of it always being the same outta 5 is 0.00001024% (1/5 ^10)
+    let mut dupes : i32 = 0;
+    let mut loops : i32 = 0;
+    for _ in 1..10
+    {
+        cur_p = judge_pick(&p_list);
+        if cur_p.get_id() == prev_p.get_id()
+        {
+            dupes +=1;
+        }
+        prev_p = cur_p;
+        loops = &loops +1;
+    }
+    assert_ne!(&dupes, &loops);
 }
 
 //GAMEPLAY
 
 #[test]
-fn test_green_apple_drawn_and_shown_to_everyone()  //Req 6
+fn green_apple_drawn_and_shown_to_everyone()  //Req 6
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_judge_do_not_play_red_apple()  //Req 7
+fn judge_do_not_play_red_apple()  //Req 7
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_order_of_cards_random_before_shown()  //Req 8
+fn order_of_cards_random_before_shown()  //Req 8
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_all_players_must_play_before_result_is_shown()  //Req 9
+fn all_players_must_play_before_result_is_shown()  //Req 9
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_judge_picks_card_winner_gets_green_apple()  //Req 10
+fn judge_picks_card_winner_gets_green_apple()  //Req 10
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_all_red_apples_go_to_discard()  //Req 11
+fn all_red_apples_go_to_discard()  //Req 11
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we start with cards in hand)
+fn all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we start with cards in hand)
 {
     let mut p_list : Vec<Player> = Vec::new();
     //Create 4 players
@@ -187,37 +209,43 @@ fn test_all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we sta
 }
 
 #[test]
-fn test_next_player_in_list_becomes_judge()  //Req 13
+fn next_player_in_list_becomes_judge()  //Req 13
+{
+    //let mut p_list : Vec<Player> = Vec::new();
+    //add like 11 boys
+    //pick a Judge at random
+    //Step 1
+    //???
+    //Pass
+    assert_eq!(1, 0);
+}
+
+#[test]
+fn check_for_winner_4p()  //Req 14
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_4p_check_for_winner()  //Req 14
+fn check_for_winner_5p() 
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_5p_check_for_winner() 
+fn check_for_winner_6p() 
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_6p_check_for_winner() 
+fn check_for_winner_7p() 
 {
     assert_eq!(1, 0);
 }
 
 #[test]
-fn test_7p_check_for_winner() 
-{
-    assert_eq!(1, 0);
-}
-
-#[test]
-fn test_8plus_check_for_winner() 
+fn check_for_winner_8plus() 
 {
     assert_eq!(1, 0);
 }

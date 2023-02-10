@@ -19,6 +19,7 @@ pub trait PlayerActions
     fn get_green_amount (&self) -> u8;
     fn add_to_hand(&mut self, rc : RedCard);
     fn get_hand_size(&self) -> u8;
+    fn get_id(&self) -> i32;
 }
 
 impl Player
@@ -47,6 +48,11 @@ impl PlayerActions for Player
     {
         let handsize : u8 = self.hand.len() as u8;
         handsize
+    }
+
+    fn get_id(&self) -> i32
+    {
+        return self.player_id;
     }
 
     fn play_card (&mut self) -> RedCard 

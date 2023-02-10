@@ -1,6 +1,7 @@
 use crate::player::*;
 use crate::deck::*;
 //use crate::card::*;
+use rand::Rng;
 
 pub fn init_game()
 {
@@ -45,6 +46,8 @@ fn game_setup()
 #[allow(dead_code)]
 fn gameplay()
 {
+    //if judge is empty, pick judge
+    //end of game, next jduge
     //6. A green apple is drawn from the pile and shown to everyone
     //7. All players except the judge plays a red Apple
     //8. Order is randomized before shown.
@@ -66,8 +69,39 @@ pub fn refill_hand(mut p : Player, mut red_deck : RedDeck) -> Player //TODO: Cha
 {
     while p.get_hand_size() < 7
     {
-        let top_card = red_deck.cards.remove(0);
-        p.add_to_hand(top_card);
+        p.add_to_hand(red_deck.draw());
     }
-    p
+    return p;
+}
+
+pub fn judge_pick(p_list : &Vec<Player>) -> Player
+{
+    let selected_index = rand::thread_rng().gen_range(0..p_list.len());
+    return p_list[selected_index].clone();
+}
+
+pub fn next_judge(p_list : &Vec<Player>, cur_judge : Player) -> Player
+{
+    let mut i = 0;
+
+    //Get index of current judge
+    for p in p_list
+    {
+        if cur_judge.get_id() == p.get_id()
+        {
+            break;
+        }
+        i = i+1;
+    }
+    let next_judge : Player;
+
+    if i == p_list.len() - 1 
+    {
+        next_judge = p_list[0].clone();
+    }
+    else
+    {
+        next_judge = p_list[i+1].clone();
+    }
+    return next_judge;
 }
