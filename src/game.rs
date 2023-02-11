@@ -5,7 +5,7 @@ use rand::Rng;
 
 pub fn init_game()
 {
-    game_setup();
+    decks_setup();
     //plyaerlist
     //host
     //setup
@@ -13,35 +13,62 @@ pub fn init_game()
     //idk
 }
 #[allow(unreachable_code)]
-fn game_setup()
+fn decks_setup()
 {
     //Create all the decks
     let mut r_deck = RedDeck{cards: Vec::new()};
     let mut g_deck = GreenDeck{cards: Vec::new()};
-    let mut _d_deck = Discard{cards: Vec::new()}; //Discard
+    let mut _d_deck = Discard{cards: Vec::new()};
+
     //1. Read all of the green apples
-    //2. Read all of the red apples 
     let _q = r_deck.read_cards();
+    //2. Read all of the red apples 
     let _q = g_deck.read_cards();
-    //TODO: Maybe create a deck.rs and read in there under a fn init?
 
     //3. Shuffle both of the decks 
     r_deck.shuffle();
     g_deck.shuffle();
 
-    println!("{}", r_deck.cards.len().to_string());
-    println!("{}", g_deck.cards.len().to_string());
+    //Just to check the size of em.
+    println!("{}", &r_deck.cards.len().to_string());
+    println!("{}", &g_deck.cards.len().to_string());
 
+    
     //4. Deal 7 red apples to each player
+    let mut p_list : Vec<Player> = Vec::new();
+
     //TODO: foreach player, add to playerlist, send playerlist into deck and do the deal.
-    //try discard
-   /* for x in 1..10
+    for p in p_list.clone()
     {
-        d_deck.cards.push(r_deck.cards.remove(0))
-    }*/
-    //5. Pick a judge at random.
-    //TODO: player_list[rnd(1..size)] eller nåt
+        //points wont work :(
+        let dif = 7 - &p.get_hand_size();
+
+        refill_hand(p, r_deck.clone());
+
+        for i in 1..dif
+        {
+            r_deck.cards.remove(0);
+        }
+    }
+
+    //Gameplay
+    {
+        //5. Pick a judge at random.
+        let judge : Player = judge_pick(&p_list);
+        //TODO: player_list[rnd(1..size)] eller nåt
+        //while true:
+        //green card picked at random
+        //Alla spelar kort, except the judge
+        //Shuffle answers
+        //judge picks
+        //winner gets green cards
+        //next(judge)
+        //
+    }
+
+
 }
+
 
 #[allow(dead_code)]
 fn gameplay()
@@ -80,7 +107,7 @@ pub fn judge_pick(p_list : &Vec<Player>) -> Player
     return p_list[selected_index].clone();
 }
 
-pub fn next_judge(p_list : &Vec<Player>, cur_judge : Player) -> Player
+pub fn next_judge(p_list : &Vec<Player>, cur_judge : &Player) -> Player
 {
     let mut i = 0;
 

@@ -41,8 +41,8 @@ fn shuffle_both_decks()  //Req 3
     let mut gd= GreenDeck{ cards : Vec::new()};
 
     //Init all decks from files
-    let _c = rd.read_cards();
-    let _d = gd.read_cards();
+    let _ = rd.read_cards();
+    let _ = gd.read_cards();
 
     //Save state before shuffle
     let b4shuffle_r : Vec<RedCard> = rd.cards.clone();
@@ -53,7 +53,6 @@ fn shuffle_both_decks()  //Req 3
     gd.shuffle();
 
     //Check the difference
-    //Sometimes it fails because of the random engine, idk either man.
     assert_ne!(hash_value(b4shuffle_r), hash_value(rd.cards));
     assert_ne!(hash_value(b4shuffle_g), hash_value(gd.cards));
 }
@@ -211,13 +210,31 @@ fn all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we start wi
 #[test]
 fn next_player_in_list_becomes_judge()  //Req 13
 {
-    //let mut p_list : Vec<Player> = Vec::new();
+    let mut p_list : Vec<Player> = Vec::new();
     //add like 11 boys
-    //pick a Judge at random
-    //Step 1
+    for x in 0..11
+    {
+        p_list.push(player_factory(x, false, true));
+    }
     //???
+    for _ in 1..100
+    {
+        //pick a Judge at random
+        let judge = judge_pick(&p_list);
+        //next judge
+        let judge_next = next_judge(&p_list, &judge);
+        
+        if &judge_next.get_id() == &0
+        {
+            //Om vi har 14 spelare blir går id: 11, 12, 13, 0, 1, 2 ---
+            assert_eq!(&judge.get_id() - (p_list.clone().len() as i32 -1), &judge_next.get_id()+0);
+        }
+        else
+        {
+            assert_eq!(&judge.get_id() + 1, &judge_next.get_id()+0);
+        }
+    }
     //Pass
-    assert_eq!(1, 0);
 }
 
 #[test]
