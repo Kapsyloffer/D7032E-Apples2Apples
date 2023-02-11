@@ -5,15 +5,16 @@ use rand::Rng;
 
 pub fn init_game()
 {
-    decks_setup();
+    game_setup();
+    gameplay();
     //plyaerlist
     //host
     //setup
     //gameplay
     //idk
 }
-#[allow(unreachable_code)]
-fn decks_setup()
+
+fn game_setup()
 {
     //Create all the decks
     let mut r_deck = RedDeck{cards: Vec::new()};
@@ -32,9 +33,9 @@ fn decks_setup()
     //Just to check the size of em.
     println!("{}", &r_deck.cards.len().to_string());
     println!("{}", &g_deck.cards.len().to_string());
-
-    
+ 
     //4. Deal 7 red apples to each player
+    #[allow(unused_mut)]
     let mut p_list : Vec<Player> = Vec::new();
 
     //TODO: foreach player, add to playerlist, send playerlist into deck and do the deal.
@@ -45,51 +46,51 @@ fn decks_setup()
 
         refill_hand(p, r_deck.clone());
 
-        for i in 1..dif
+        for _ in 1..dif
         {
             r_deck.cards.remove(0);
         }
     }
 
     //Gameplay
-    {
-        //5. Pick a judge at random.
-        let judge : Player = judge_pick(&p_list);
-        //TODO: player_list[rnd(1..size)] eller nåt
-        //while true:
-        //green card picked at random
-        //Alla spelar kort, except the judge
-        //Shuffle answers
-        //judge picks
-        //winner gets green cards
-        //next(judge)
-        //
-    }
-
-
+    //5. Pick a judge at random.
+    //TODO: player_list[rnd(1..size)] eller nåt
+    //while true:
+    //green card picked at random
+    //Alla spelar kort, except the judge
+    //Shuffle answers
+    //judge picks
+    //winner gets green cards
+    //next(judge)
 }
 
 
 #[allow(dead_code)]
 fn gameplay()
 {
-    //if judge is empty, pick judge
-    //end of game, next jduge
-    //6. A green apple is drawn from the pile and shown to everyone
-    //7. All players except the judge plays a red Apple
-    //8. Order is randomized before shown.
-    //9. All players must play a card before the results at 8 are shown.
-    //10. Judge picks card, winner gets the green apple.
-    //11. All red apples end up in the discard pile.
-    //12. All players draw 7-n cards where n is their handsize
-    //13. Next player in the list becomes judge.
+    //let _judge : Player = judge_pick(&p_list);
+    #[allow(while_true)]
+    while true
+    {
+        //if judge is empty, pick judge
+        //end of game, next jduge
+        //6. A green apple is drawn from the pile and shown to everyone
+        //7. All players except the judge plays a red Apple
+        //8. Order is randomized before shown.
+        //9. All players must play a card before the results at 8 are shown.
+        //10. Judge picks card, winner gets the green apple.
+        //11. All red apples end up in the discard pile.
+        //12. All players draw 7-n cards where n is their handsize
+        //13. Next player in the list becomes judge.
 
-    /*Here’s how to tell when the game is over:
-    • For 4 players, 8 green apples win.
-    • For 5 players, 7 green apples win.
-    • For 6 players, 6 green apples win.
-    • For 7 players, 5 green apples win.
-    • For 8+ players, 4 green apples win.*/
+        /*Here’s how to tell when the game is over:
+        • For 4 players, 8 green apples win.
+        • For 5 players, 7 green apples win.
+        • For 6 players, 6 green apples win.
+        • For 7 players, 5 green apples win.
+        • For 8+ players, 4 green apples win.*/
+        break;
+    }
 }
 
 pub fn refill_hand(mut p : Player, mut red_deck : RedDeck) -> Player //TODO: Change to REDDECK
