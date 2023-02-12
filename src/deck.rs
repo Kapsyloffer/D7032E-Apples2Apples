@@ -9,14 +9,12 @@ pub trait Setup
     fn shuffle (&mut self);
 }
 
-#[allow(dead_code)]
 #[derive(Clone)]
 pub struct RedDeck
 {
     pub cards : Vec<RedCard>
 }
 
-#[allow(dead_code)]
 pub struct GreenDeck
 {
     pub cards : Vec<GreenCard>

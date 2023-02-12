@@ -326,7 +326,7 @@ fn check_for_winner_7p()
 }
 
 #[test]
-fn check_for_winner_8() 
+fn check_for_winner_8p() 
 {
     let mut p_list : Vec<Player> = Vec::new();
     //Generate 8 players

@@ -1,4 +1,5 @@
 use crate::card::*;
+use std::collections::HashMap;
 #[allow(dead_code)]
 #[derive(Clone)]
 pub struct Player
@@ -21,12 +22,26 @@ pub trait PlayerActions
     fn get_hand_size(&self) -> u8;
     fn get_id(&self) -> i32;
     fn give_green(&mut self, g : GreenCard);
+    //fn vote(&self, cards : HashMap<i32, RedCard>) -> i32;//winner ID
+}
+pub trait Judge
+{
+   fn pick(&self, cards : &mut HashMap<i32, RedCard>) -> i32;//winner ID
 }
 
 impl Player
 {
     #[allow(dead_code)]
     fn do_stuff(&self)
+    {
+        todo!();
+    }
+}
+
+impl Judge for Player
+{
+    #[allow(unused_variables)]
+    fn pick(&self, cards : &mut HashMap<i32, RedCard>) -> i32
     {
         todo!();
     }
@@ -63,6 +78,7 @@ impl PlayerActions for Player
 
     fn play_card (&mut self) -> RedCard 
     {
+        //if bot, do random, else pick
         todo!()
     }
 }
