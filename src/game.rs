@@ -5,8 +5,14 @@ use rand::Rng;
 
 pub fn init_game()
 {
-    game_setup();
-    gameplay();
+    //Create all the decks
+    let mut r_deck = RedDeck{cards: Vec::new()};
+    let mut g_deck = GreenDeck{cards: Vec::new()};
+    let mut d_deck = Discard{cards: Vec::new()};
+    //Players
+    let mut p_list : Vec<Player> = Vec::new();
+    game_setup(&mut r_deck, &mut g_deck);
+    gameplay(&mut r_deck, &mut g_deck, &mut d_deck, &mut p_list);
     //plyaerlist
     //host
     //setup
@@ -14,12 +20,8 @@ pub fn init_game()
     //idk
 }
 
-fn game_setup()
+fn game_setup(r_deck : &mut RedDeck,g_deck : &mut GreenDeck)
 {
-    //Create all the decks
-    let mut r_deck = RedDeck{cards: Vec::new()};
-    let mut g_deck = GreenDeck{cards: Vec::new()};
-    let mut _d_deck = Discard{cards: Vec::new()};
 
     //1. Read all of the green apples
     let _q = r_deck.read_cards();
@@ -33,25 +35,6 @@ fn game_setup()
     //Just to check the size of em.
     println!("{}", &r_deck.cards.len().to_string());
     println!("{}", &g_deck.cards.len().to_string());
- 
-    //4. Deal 7 red apples to each player
-    #[allow(unused_mut)]
-    let mut p_list : Vec<Player> = Vec::new();
-
-    //TODO: foreach player, add to playerlist, send playerlist into deck and do the deal.
-    for p in p_list.clone()
-    {
-        //points wont work :(
-        let dif = 7 - &p.get_hand_size();
-
-        refill_hand(p, r_deck.clone());
-
-        for _ in 1..dif
-        {
-            r_deck.cards.remove(0);
-        }
-    }
-
     //Gameplay
     //5. Pick a judge at random.
     //TODO: player_list[rnd(1..size)] eller nåt
@@ -66,9 +49,10 @@ fn game_setup()
 
 
 #[allow(dead_code)]
-fn gameplay()
+#[allow(unused_variables)]
+fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discard, p_list : &mut Vec<Player>)
 {
-    //let _judge : Player = judge_pick(&p_list);
+    let _judge : Player = judge_pick(&p_list);
     #[allow(while_true)]
     while true
     {
@@ -82,24 +66,19 @@ fn gameplay()
         //11. All red apples end up in the discard pile.
         //12. All players draw 7-n cards where n is their handsize
         //13. Next player in the list becomes judge.
-
-        /*Here’s how to tell when the game is over:
-        • For 4 players, 8 green apples win.
-        • For 5 players, 7 green apples win.
-        • For 6 players, 6 green apples win.
-        • For 7 players, 5 green apples win.
-        • For 8+ players, 4 green apples win.*/
-        break;
+        if check_winner(&p_list)
+        {
+            break;
+        }
     }
 }
 
-pub fn refill_hand(mut p : Player, mut red_deck : RedDeck) -> Player //TODO: Change to REDDECK
+pub fn refill_hand(p : &mut Player, red_deck : &mut RedDeck) //TODO: Change to REDDECK
 {
     while p.get_hand_size() < 7
     {
         p.add_to_hand(red_deck.draw());
     }
-    return p;
 }
 
 pub fn judge_pick(p_list : &Vec<Player>) -> Player
@@ -132,4 +111,27 @@ pub fn next_judge(p_list : &Vec<Player>, cur_judge : &Player) -> Player
         next_judge = p_list[i+1].clone();
     }
     return next_judge;
+}
+
+pub fn check_winner(p_list : &Vec<Player>) -> bool
+{
+    let limit : u8;
+
+    match p_list.len()
+    {
+        4=>limit = 8,
+        5=>limit = 7,
+        6=>limit = 6,
+        7=>limit = 5,
+        l if l >= 8 => limit = 4, //8+
+        _=> panic!("Wtf u doing bro")
+    }
+    for p in p_list
+    {
+        if p.get_green_amount() >= limit
+        {
+            return true;
+        }
+    }
+    return false;
 }

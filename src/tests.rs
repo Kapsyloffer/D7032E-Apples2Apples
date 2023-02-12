@@ -12,25 +12,19 @@ use std::hash::Hash;
 #[test]
 fn read_all_green_apples() //Req 1
 {
-    let mut _gc : GreenDeck = GreenDeck
-    {
-        cards : Vec::new()
-    };
-    let b4 : i32 = _gc.cards.len() as i32;
-    let _c = _gc.read_cards();
-    let after : i32 = _gc.cards.len() as i32;
+    let mut _gc : GreenDeck = GreenDeck {cards : Vec::new()};
+    let b4 = _gc.cards.len();
+    let _ = _gc.read_cards();
+    let after = _gc.cards.len();
     assert_ne!(b4, after);
 }
 #[test]
 fn read_all_red_apples()  //Req 2
 {
-    let mut _rc : RedDeck = RedDeck
-    {
-        cards : Vec::new()
-    };
-    let b4 : i32 = _rc.cards.len() as i32;
-    let _c = _rc.read_cards();
-    let after : i32 = _rc.cards.len() as i32;
+    let mut _rc : RedDeck = RedDeck {cards : Vec::new()};
+    let b4  = _rc.cards.len();
+    let _ = _rc.read_cards();
+    let after = _rc.cards.len();
     assert_ne!(b4, after);
 }
 #[test]
@@ -73,8 +67,7 @@ fn deal7_red_apples_to_each_player()  //Req 4
     //Create 4 players with empty hands
     for x in 1..4
     {
-       let p : Player = player_factory(x, false, true);
-       p_list.push(p);
+       p_list.push(player_factory(x, false, true));
     }
 
     let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
@@ -85,12 +78,10 @@ fn deal7_red_apples_to_each_player()  //Req 4
         dummy_deck.add_to_deck(dummy_card);
     }
 
+    //Refills hand properly
     for p in 0..p_list.len()
     {
-        let mut dummy_p = p_list[p].clone();
-        dummy_p = refill_hand(dummy_p, dummy_deck.clone());
-        p_list.remove(0);
-        p_list.push(dummy_p);
+        refill_hand(&mut p_list[p], &mut dummy_deck);
     }
 
     for p in 0..p_list.len()
@@ -194,10 +185,7 @@ fn all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we start wi
 
     for p in 0..p_list.len()
     {
-        let mut dummy_p = p_list[p].clone();
-        dummy_p = refill_hand(dummy_p, dummy_deck.clone());
-        p_list.remove(0);
-        p_list.push(dummy_p);
+        refill_hand(&mut p_list[p], &mut dummy_deck);
     }
 
     for p in 0..p_list.len()
@@ -240,29 +228,149 @@ fn next_player_in_list_becomes_judge()  //Req 13
 #[test]
 fn check_for_winner_4p()  //Req 14
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    //Generate 4 players
+    for i in 0..4
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+    //Check
+    assert_ne!(true, check_winner(&p_list));
+    //Create a dummy green deck
+    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let _ = g_deck.read_cards();
+    let _ = g_deck.shuffle();
+    //give a player 8 green
+    for _ in 0..8
+    {
+        println!("{}\n", &g_deck.cards[0].title);
+        p_list[0].give_green(g_deck.cards.remove(0));
+    }
+    //check
+    assert_eq!(true, check_winner(&p_list));
 }
 
 #[test]
 fn check_for_winner_5p() 
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    //Generate 5 players
+    for i in 0..5
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+    //Check
+    assert_ne!(true, check_winner(&p_list));
+    //Create a dummy green deck
+    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let _ = g_deck.read_cards();
+    let _ = g_deck.shuffle();
+    //give a player 7 green
+    for _ in 0..7
+    {
+        println!("{}\n", &g_deck.cards[0].title);
+        p_list[0].give_green(g_deck.cards.remove(0));
+    }
+    //check
+    assert_eq!(true, check_winner(&p_list));
 }
 
 #[test]
 fn check_for_winner_6p() 
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    //Generate 6 players
+    for i in 0..6
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+    //Check
+    assert_ne!(true, check_winner(&p_list));
+    //Create a dummy green deck
+    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let _ = g_deck.read_cards();
+    let _ = g_deck.shuffle();
+    //give a player 6 green
+    for _ in 0..6
+    {
+        println!("{}\n", &g_deck.cards[0].title);
+        p_list[0].give_green(g_deck.cards.remove(0));
+    }
+    //check
+    assert_eq!(true, check_winner(&p_list));
 }
 
 #[test]
 fn check_for_winner_7p() 
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    //Generate 7 players
+    for i in 0..7
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+    //Check
+    assert_ne!(true, check_winner(&p_list));
+    //Create a dummy green deck
+    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let _ = g_deck.read_cards();
+    let _ = g_deck.shuffle();
+    //give a player 5 green
+    for _ in 0..5
+    {
+        println!("{}\n", &g_deck.cards[0].title);
+        p_list[0].give_green(g_deck.cards.remove(0));
+    }
+    //check
+    assert_eq!(true, check_winner(&p_list));
+}
+
+#[test]
+fn check_for_winner_8() 
+{
+    let mut p_list : Vec<Player> = Vec::new();
+    //Generate 8 players
+    for i in 0..8
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+    //Check
+    assert_ne!(true, check_winner(&p_list));
+    //Create a dummy green deck
+    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let _ = g_deck.read_cards();
+    let _ = g_deck.shuffle();
+    //give a player 4 green
+    for _ in 0..4
+    {
+        println!("{}\n", &g_deck.cards[0].title);
+        p_list[0].give_green(g_deck.cards.remove(0));
+    }
+    //check
+    assert_eq!(true, check_winner(&p_list));
 }
 
 #[test]
 fn check_for_winner_8plus() 
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    //Generate 8 players
+    for i in 0..54
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+    //Check
+    assert_ne!(true, check_winner(&p_list));
+    //Create a dummy green deck
+    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let _ = g_deck.read_cards();
+    let _ = g_deck.shuffle();
+    //give a player 4 green
+    for _ in 0..8
+    {
+        println!("{}\n", &g_deck.cards[0].title);
+        p_list[0].give_green(g_deck.cards.remove(0));
+    }
+    //check
+    assert_eq!(true, check_winner(&p_list));
 }
