@@ -60,7 +60,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     while true
     {
         //pick judge
-        judge = judge_pick(&p_list);
+        judge = judge_pick(&p_list).clone();
         println!("{} is the Judge!", judge.get_id().to_string());
         //6. A green apple is drawn from the pile 
         cur_green = g_deck.cards.remove(0);
@@ -113,13 +113,13 @@ pub fn refill_hand(p : &mut Player, red_deck : &mut RedDeck) //TODO: Change to R
     }
 }
 
-pub fn judge_pick(p_list : &Vec<Player>) -> Player
+pub fn judge_pick(p_list : &Vec<Player>) -> &Player
 {
     let selected_index = rand::thread_rng().gen_range(0..p_list.len());
-    return p_list[selected_index].clone();
+    return &p_list[selected_index];
 }
 
-pub fn next_judge(p_list : &Vec<Player>, cur_judge : &Player) -> Player
+pub fn next_judge<'a>(p_list: &'a Vec<Player>, cur_judge: &'a Player) -> &'a Player
 {
     let mut i = 0;
 
@@ -132,16 +132,16 @@ pub fn next_judge(p_list : &Vec<Player>, cur_judge : &Player) -> Player
         }
         i = i+1;
     }
-    let next_judge : Player;
+    let next_judge : &Player;
 
     //if id overflows, return to 0
     if i == p_list.len() - 1 
     {
-        next_judge = p_list[0].clone();
+        next_judge = &p_list[0];
     }
     else
     {
-        next_judge = p_list[i+1].clone();
+        next_judge = &p_list[i+1];
     }
     return next_judge;
 }

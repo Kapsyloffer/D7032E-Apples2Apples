@@ -101,14 +101,14 @@ fn pick_a_judge_at_random()  //Req 5
         p_list.push(player_factory(x, false, true));
     }
 
-    let mut prev_p = judge_pick(&p_list);
+    let mut prev_p = judge_pick(&p_list).clone();
     let mut cur_p : Player;
     //Try 10 times, probability of it always being the same outta 5 is 0.00001024% (1/5 ^10)
     let mut dupes : i32 = 0;
     let mut loops : i32 = 0;
     for _ in 1..10
     {
-        cur_p = judge_pick(&p_list);
+        cur_p = judge_pick(&p_list).clone();
         if cur_p.get_id() == prev_p.get_id()
         {
             dupes +=1;
@@ -215,7 +215,7 @@ fn next_player_in_list_becomes_judge()  //Req 13
         if &judge_next.get_id() == &0
         {
             //Om vi har 14 spelare blir går id: 11, 12, 13, 0, 1, 2 ---
-            assert_eq!(&judge.get_id() - (p_list.clone().len() as i32 -1), &judge_next.get_id()+0);
+            assert_eq!(&judge.get_id() - (&p_list.len() -1) as i32, &judge_next.get_id()+0);
         }
         else
         {

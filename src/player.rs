@@ -1,15 +1,18 @@
+#![allow(unused_imports)]
+#![allow(dead_code)]
 use crate::card::*;
 use std::collections::HashMap;
-#[allow(dead_code)]
+use std::net::TcpStream;
+use std::io::*;
 #[derive(Clone)]
 pub struct Player
 {
     player_id : i32,
     is_bot : bool,
     online : bool,
-    //connection : socket,
-    //inFromClient : BufferedReader,
-    //outToClient : DataOutputStream,
+    //connection: Option<TcpStream>,
+    //in_from_client: Option<BufReader<TcpStream>>,
+    //out_to_client: Option<BufWriter<TcpStream>>,
     hand : Vec<RedCard>,
     green_apples : Vec<GreenCard>,
 }
@@ -80,6 +83,8 @@ impl PlayerActions for Player
     {
         //if bot, do random, else pick
         todo!()
+        //foreach card in hand, print: THESE ARE YOUR CARDS; 1. {title} {desc}, 2. ...
+        //ask for input,
     }
 }
 
