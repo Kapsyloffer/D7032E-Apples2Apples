@@ -13,6 +13,11 @@ pub fn init_game()
     let mut d_deck = Discard{cards: Vec::new()};
     //Players
     let mut p_list : Vec<Player> = Vec::new();
+    //add dummy players
+    for i in 0..4
+    {
+        p_list.push(player_factory(i, true, false));
+    }
     //setup
     game_setup(&mut r_deck, &mut g_deck);
     //gameplay
