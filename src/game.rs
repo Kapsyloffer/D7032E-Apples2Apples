@@ -69,7 +69,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         //6. A green apple is drawn from the pile 
         cur_green = g_deck.cards.remove(0);
         //and shown to everyone
-        print!("{}\n{}", cur_green.title, cur_green.desc);
+        println!("{}\n{}", cur_green.title, cur_green.desc);
         //7. All players except the judge plays a red Apple
         for p in p_list.iter_mut()
         {

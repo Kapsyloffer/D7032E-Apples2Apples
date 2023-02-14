@@ -4,6 +4,8 @@ use crate::card::*;
 use std::collections::HashMap;
 use std::net::TcpStream;
 use std::io::*;
+use rand::Rng;
+use std::io;
 #[derive(Clone)]
 pub struct Player //I guess all networking handlas av Client
 {
@@ -22,30 +24,54 @@ pub trait PlayerActions
     fn get_hand_size(&self) -> u8;
     fn get_id(&self) -> i32;
     fn give_green(&mut self, g : GreenCard);
-    //fn vote(&self, cards : HashMap<i32, RedCard>) -> i32;//winner ID
+    fn vote(&self, cards : HashMap<i32, RedCard>) -> i32;//winner ID
 }
 pub trait Judge
 {
    fn pick(&self, cards : &mut HashMap<i32, RedCard>) -> i32;//winner ID
 }
 
-impl Player
-{
-    #[allow(dead_code)]
-    fn do_stuff(&self)
-    {
-        todo!();
-    }
-}
-
-impl Judge for Player
+impl Judge for Player //TODO: TEST
 {
     #[allow(unused_variables)]
     fn pick(&self, cards : &mut HashMap<i32, RedCard>) -> i32
     {
-        todo!();
+        let mut competitors : Vec<i32> = Vec::new();
+        let c_size = &cards.len();
+        for c in cards
+        {
+            println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
+            competitors.push(*c.0);
+        }
+        if self.is_bot
+        {
+            return competitors[rand::thread_rng().gen_range(0..competitors.len())];
+        }
+        else
+        {
+            loop 
+            {
+                println!("Pick the best card: ");
+                let mut input = String::new();
+                io::stdin().read_line(&mut input).expect("Failed to read line");
+
+                let _ = match input.trim().parse::<usize>() 
+                {
+                    Ok(num) if num < *c_size => 
+                    {
+                        return competitors[num];
+                    },
+                    _ => 
+                    {
+                        println!("Invalid input. Please try again.");
+                        continue;
+                    }
+                };
+            }
+        }
     }
 }
+
 
 impl PlayerActions for Player
 {
@@ -76,12 +102,85 @@ impl PlayerActions for Player
         return self.player_id;
     }
 
-    fn play_card (&mut self) -> RedCard 
+    fn play_card (&mut self) -> RedCard  //TODO: TEST
     {
         //if bot, do random, else pick
-        todo!()
+        if self.is_bot
+        {
+            return self.hand.remove(rand::thread_rng().gen_range(0..self.hand.len()));
+        }
+        else
+        {
+            let mut i = 0;
+            for c in self.hand.iter_mut()
+            {
+                println!("{}:  {} - {}", i.to_string(), c.get_title(), c.get_desc());
+                i+=1;
+            }
+            loop 
+            {
+                println!("Pick your card:");
+                let mut input = String::new();
+                io::stdin().read_line(&mut input).expect("Failed to read line");
+
+                let _ = match input.trim().parse::<usize>() 
+                {
+                    Ok(num) if num < self.hand.len() => 
+                    {
+                        return self.hand.remove(num);
+                    },
+                    _ => 
+                    {
+                        println!("Invalid input. Please try again.");
+                        continue;
+                    }
+                };
+            }
+
+        }
         //foreach card in hand, print: THESE ARE YOUR CARDS; 1. {title} {desc}, 2. ...
         //ask for input,
+    }
+
+    fn vote(&self, cards : HashMap<i32, RedCard>) -> i32 //TODO: TEST
+    {
+        let mut competitors : Vec<i32> = Vec::new();
+        let c_size = &cards.len();
+        
+        for c in &cards
+        {
+            if *c.0 != self.get_id()
+            {
+                println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
+                competitors.push(*c.0);
+            }
+        }
+        if self.is_bot
+        {
+            return competitors[rand::thread_rng().gen_range(0..competitors.len())];
+        }
+        else
+        {
+            loop 
+            {
+                println!("Vote for the best card:");
+                let mut input = String::new();
+                io::stdin().read_line(&mut input).expect("Failed to read line");
+
+                let _ = match input.trim().parse::<usize>() 
+                {
+                    Ok(num) if num < *c_size => 
+                    {
+                        return competitors[num];
+                    },
+                    _ => 
+                    {
+                        println!("Invalid input. Please try again.");
+                        continue;
+                    }
+                };
+            }
+        }
     }
 }
 

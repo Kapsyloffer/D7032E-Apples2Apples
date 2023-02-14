@@ -33,15 +33,27 @@ impl Setup for GreenDeck
         let file = File::open("txt_files/greenApples.txt")?;
         let reader = BufReader::new(file);
 
-        for line in reader.lines()
+        for line in reader.lines() 
         {
-            //let mut title_and_desc : Vec![&str] = line.split("-");
-            let new_green = GreenCard
+            if let Ok(line_str) = line 
             {
-                title: line.unwrap(),
-                desc: "pending".to_string()
-            };
-            new_deck.push(new_green);
+                let parts: Vec<&str> = line_str.splitn(2, " - ").collect();
+                if parts.len() == 2 
+                {
+                    let new_green = GreenCard 
+                    {
+                        title: parts[0].to_string(),
+                        desc: parts[1].to_string(),
+                    };
+                    new_deck.push(new_green);
+                } 
+                else 
+                {
+                    eprintln!("Skipping invalid line: {}", line_str);
+                }
+            } else {
+                eprintln!("Error reading line: {:?}", line);
+            }
         }
         //Reset deck and add the new cards 
         self.cards.clear();
