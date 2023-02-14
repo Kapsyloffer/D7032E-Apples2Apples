@@ -61,8 +61,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     let mut cur_green : GreenCard;
     //Include id so we can track the winner
     let mut red_cards : HashMap<i32, RedCard> = HashMap::new();
-    #[allow(while_true)]
-    while true
+    loop
     {
         //pick judge
         judge = judge_pick(&p_list).clone();

@@ -5,14 +5,11 @@ use std::collections::HashMap;
 use std::net::TcpStream;
 use std::io::*;
 #[derive(Clone)]
-pub struct Player
+pub struct Player //I guess all networking handlas av Client
 {
     player_id : i32,
     is_bot : bool,
     online : bool,
-    //connection: Option<TcpStream>,
-    //in_from_client: Option<BufReader<TcpStream>>,
-    //out_to_client: Option<BufWriter<TcpStream>>,
     hand : Vec<RedCard>,
     green_apples : Vec<GreenCard>,
 }
@@ -95,9 +92,6 @@ pub fn player_factory (id : i32, bot : bool, o: bool) -> Player
         player_id : id,
         is_bot : bot,
         online : o,
-        //connection : socket,
-        //inFromClient : BufferedReader,
-        //outToClient : DataOutputStream,
         hand : Vec::new(),
         green_apples : Vec::new(),
     };

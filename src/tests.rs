@@ -210,7 +210,7 @@ fn next_player_in_list_becomes_judge()  //Req 13
         //pick a Judge at random
         let judge = judge_pick(&p_list);
         //next judge
-        let judge_next = next_judge(&p_list, &judge);
+        let judge_next = next_judge(&p_list, judge);
         
         if &judge_next.get_id() == &0
         {
