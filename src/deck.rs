@@ -37,7 +37,7 @@ impl Setup for GreenDeck
         {
             if let Ok(line_str) = line 
             {
-                let parts: Vec<&str> = line_str.splitn(2, " - ").collect();
+                let parts: Vec<&str> = line_str.splitn(2, "] -").collect();
                 if parts.len() == 2 
                 {
                     let new_green = GreenCard 
@@ -51,7 +51,9 @@ impl Setup for GreenDeck
                 {
                     eprintln!("Skipping invalid line: {}", line_str);
                 }
-            } else {
+            } 
+            else 
+            {
                 eprintln!("Error reading line: {:?}", line);
             }
         }
@@ -92,18 +94,30 @@ impl Setup for RedDeck
         let reader = BufReader::new(file);
         //Clear the deck so it doesn't duplicate
         self.cards.clear();
-        for line in reader.lines()
+        for line in reader.lines() 
         {
-            //let mut title_and_desc = line.split("-");
-            let new_red = RedCard
+            if let Ok(line_str) = line 
             {
-                title: line.unwrap(),
-                desc: "pending".to_string()
-            };
-            self.add_to_deck(new_red);
+                let parts: Vec<&str> = line_str.splitn(2, " -").collect();
+                if parts.len() == 2 
+                {
+                    let new_red = RedCard 
+                    {
+                        title: parts[0].to_string(),
+                        desc: parts[1].to_string(),
+                    };
+                    self.add_to_deck(new_red);
+                } 
+                else 
+                {
+                    eprintln!("Skipping invalid line: {}", line_str);
+                }
+            } 
+            else 
+            {
+                eprintln!("Error reading line: {:?}", line);
+            }
         }
-
-        println!("Red deck ready, SIZE: {}", self.cards.len());
 
         return Ok("Red Deck made".to_string());
     }
@@ -141,5 +155,18 @@ impl RedDeck
     pub fn add_to_deck(&mut self, rc: RedCard)
     {
         self.cards.push(rc);
+    }
+}
+
+impl Discard
+{
+    pub fn add_to_discard(&mut self, r : RedCard)
+    {
+        self.cards.push(r);
+    }
+
+    pub fn get_size(&self) -> usize
+    {
+        return self.cards.len();
     }
 }

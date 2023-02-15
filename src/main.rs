@@ -1,11 +1,11 @@
+#![allow(dead_code)]
 use apples::game::*;
 use std::*;
 use std::net::*;
 use apples::networking::Client;
 fn main() 
 {
-    println!("Hello world!");
-    menu_main();
+    //menu_main();
     //TODO: Client and Server
     //Starts the game
     init_game();
@@ -72,5 +72,6 @@ fn join_lobby()-> std::io::Result<()>
 
 fn host_lobby()
 {
+    println!("Lobby hosted at: [PORT]");
     
 }

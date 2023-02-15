@@ -5,6 +5,7 @@ use crate::card::*;
 use crate::deck::*;    
 use rand::Rng;
 use core::hash::*;
+use std::collections::HashMap;
 use std::hash::Hash;
 
 #[cfg(test)]
@@ -134,7 +135,7 @@ fn judge_do_not_play_red_apple()  //Req 7
 }
 
 #[test]
-fn order_of_cards_random_before_shown()  //Req 8
+fn order_of_cards_randomized_before_shown_to_judge()  //Req 8
 {
     assert_eq!(1, 0);
 }
@@ -154,7 +155,30 @@ fn judge_picks_card_winner_gets_green_apple()  //Req 10
 #[test]
 fn all_red_apples_go_to_discard()  //Req 11
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    let mut red_cards : HashMap<i32, RedCard> = HashMap::new();
+    let mut discard : Discard = Discard{cards:Vec::new()};
+    //create 5 bots
+    for i in 0..5
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+    //Give them all one dummy card
+    for p in p_list.iter_mut()
+    {
+        p.add_to_hand(RedCard{title: "[dummy card]".to_string(), desc: "dummy card".to_string()});
+    }
+    //Have them all play their card into the red cards pile.
+    for p in p_list.iter_mut()
+    {
+        red_cards.insert(p.get_id(), p.play_card());
+    }
+    //Get size of redcards pile before trashing
+    let sizeb4 = red_cards.len();
+    //Send the red cards to discard, return empty redcard pile
+    red_cards = send_to_discard(red_cards, &mut discard);
+    //Check size difference
+    assert_ne!(sizeb4, red_cards.len());
 }
 
 #[test]

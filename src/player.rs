@@ -51,7 +51,7 @@ impl Judge for Player //TODO: TEST
         {
             loop 
             {
-                println!("Pick the best card: ");
+                println!("YOU ARE THE JUDGE\nPick the best card: ");
                 let mut input = String::new();
                 io::stdin().read_line(&mut input).expect("Failed to read line");
 
