@@ -131,7 +131,21 @@ fn green_apple_drawn_and_shown_to_everyone()  //Req 6
 #[test]
 fn judge_do_not_play_red_apple()  //Req 7
 {
-    assert_eq!(1, 0);
+    //Judge
+    let p1: Player = player_factory(1, true, true);
+    //Normal player1
+    let p2: Player = player_factory(2, true, true);
+    //Normal player2
+    let p3: Player = player_factory(3, true, true);
+
+    let j : &Player = &p2;
+
+    //Can_play_apple is always run on gameplay, it checks wether you're a judge or not
+    //and because the judge cannot play cards it returns false.
+
+    assert_eq!(can_play_apple(&p1, &j), true);
+    assert_eq!(can_play_apple(&p2, &j), false); //Will fail because p2 is judge
+    assert_eq!(can_play_apple(&p3, &j), true);
 }
 
 #[test]

@@ -82,7 +82,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         //7. All players except the judge plays a red Apple
         for p in p_list.iter_mut()
         {
-            if &p.get_id() != &judge.get_id()
+            if can_play_apple(&p, &judge)
             {
                 //play_cards return a redcard, the idea is that
                 //the played redcard will go straight into the pile
@@ -204,4 +204,9 @@ pub fn send_to_discard(rc: HashMap<i32, RedCard>, d : &mut Discard) -> HashMap<i
         d.add_to_discard(c);
     }
     return HashMap::new(); //Ful lösning but eh
+}
+
+pub fn can_play_apple(p: &Player, j : &Player) -> bool
+{
+    return p.get_id() != j.get_id();
 }
