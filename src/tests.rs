@@ -163,6 +163,40 @@ fn all_players_must_play_before_result_is_shown()  //Req 9
 #[test]
 fn judge_picks_card_winner_gets_green_apple()  //Req 10
 {
+    /* 
+    let mut p_list : Vec<Player> = Vec::new();
+    let mut red_cards : HashMap<i32, RedCard> = HashMap::new();
+    let green : GreenCard = GreenCard{title: "Dummy green".to_string(), desc: "Despite the name he's actually quite smart".to_string()};
+    for i in 0..6 as usize
+    {
+        p_list.push(player_factory(i as i32, true, true));
+        p_list[i].add_to_hand(RedCard{title : "[Dummy]".to_string(), desc: "Dummy card".to_string()});
+    }
+    let j : &Player = judge_pick(&p_list);
+     //Have them all play their card into the red cards pile.
+     for p in &mut p_list
+     {
+        if can_play_apple(&p, &j)
+        {
+            red_cards.insert(p.get_id(), p.play_card());
+        }
+     }
+     let win_id = j.pick(&mut red_cards);
+     let winner : &Player;
+     for p in p_list
+     {
+        if p.get_id() == win_id
+        {
+            winner = &p;
+            break;
+        }
+     }
+     //Give 1 green card
+     reward_winner(&mut winner, green);
+     //Check if the winner has one green.
+     assert_eq!(winner.get_green_amount(), 1);
+     //
+    */
     assert_eq!(1, 0);
 }
 

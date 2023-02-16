@@ -148,6 +148,7 @@ impl RedDeck
 {
     pub fn draw (&mut self) -> RedCard
     {
+        self.shuffle(); //fixes the non-random draw issue, TEMP (REMOVE LATER)
         let card = self.cards.remove(0);
         return card;
     }

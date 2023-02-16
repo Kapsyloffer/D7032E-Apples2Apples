@@ -12,7 +12,7 @@ pub struct Player //I guess all networking handlas av Client
     player_id : i32,
     is_bot : bool,
     online : bool,
-    hand : Vec<RedCard>,
+    pub hand : Vec<RedCard>, //debugging, remove pub later
     green_apples : Vec<GreenCard>,
 }
 

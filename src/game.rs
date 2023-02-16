@@ -7,52 +7,26 @@ use rand::Rng;
 pub fn init_game()
 {
     //TODO:: HOST?
+
     //Create all the decks
     let mut r_deck = RedDeck{cards: Vec::new()};
     let mut g_deck = GreenDeck{cards: Vec::new()};
     let mut d_deck = Discard{cards: Vec::new()};
     
-    //setup
-    game_setup(&mut r_deck, &mut g_deck);
-
-    //Players
+    //Add Players
     let mut p_list : Vec<Player> = Vec::new();
+
     //add dummy players
     for i in 0..5
     {
         p_list.push(player_factory(i, true, false));
     }
     p_list.push(player_factory(5, false, true));
+
     //gameplay
     gameplay(&mut r_deck, &mut g_deck, &mut d_deck, &mut p_list);
-    //idk
-}
 
-fn game_setup(r_deck : &mut RedDeck,g_deck : &mut GreenDeck)
-{
-
-    //1. Read all of the green apples
-    let _q = r_deck.read_cards();
-    //2. Read all of the red apples 
-    let _q = g_deck.read_cards();
-
-    //3. Shuffle both of the decks 
-    r_deck.shuffle();
-    g_deck.shuffle();
-
-    //Just to check the size of em.
-    //println!("\nRed deck:{}\n", &r_deck.cards.len().to_string());
-    //println!("Green deck:{}\n", &g_deck.cards.len().to_string());
-    //Gameplay
-    //5. Pick a judge at random.
-    //TODO: player_list[rnd(1..size)] eller nåt
-    //while true:
-    //green card picked at random
-    //Alla spelar kort, except the judge
-    //Shuffle answers
-    //judge picks
-    //winner gets green cards
-    //next(judge)
+    //And that's all she wrote.
 }
 
 
@@ -60,26 +34,53 @@ fn game_setup(r_deck : &mut RedDeck,g_deck : &mut GreenDeck)
 #[allow(unused_variables)]
 fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discard, p_list : &mut Vec<Player>)
 {
-    let mut judge : Player;
+    
+    //Req 1. Read all of the green apples
+    _ = r_deck.read_cards();
+
+    //Req 2. Read all of the red apples 
+    _ = g_deck.read_cards();
+
+    //Req 3. Shuffle both of the decks (Doesn't work for some reason)
+    r_deck.shuffle();
+    g_deck.shuffle();
+
+    //This will always be the shown green card.
     let mut cur_green : GreenCard;
+
     //Include id so we can track the winner
     let mut red_cards : HashMap<i32, RedCard> = HashMap::new();
-    //deal 7 cards to each player
-    
-    //pick judge
-    judge = judge_pick(&p_list).clone();
+
+    //Req 4. deal 7 cards to each player
     for p in p_list.iter_mut()
     {
         refill_hand(p, r_deck);
     }
+    for p in p_list.iter_mut()
+    {
+        for x in &p.hand
+        {
+            println!("{}: {}", p.get_id().to_string(), x.title);
+        }
+        println!("\n");
+    }
+
+    //Req 5. pick judge
+    let mut judge : Player = judge_pick(&p_list).clone();
     loop
     {
+        //"Clear" the screen
+        //print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
+
+        //Announce judge
         println!("{} is the Judge!\n", judge.get_id().to_string());
-        //6. A green apple is drawn from the pile 
+
+        //Req 6. A green apple is drawn from the pile 
         cur_green = g_deck.cards.remove(0);
         //and shown to everyone
-        println!("{}\n{}\n", &cur_green.get_title(), &cur_green.get_desc()); //After this point, "cannot sample empty range"
-        //7. All players except the judge plays a red Apple
+        println!("{}\n{}", &cur_green.get_title(), &cur_green.get_desc()); //After this point, "cannot sample empty range"
+        
+        //Req 7. All players except the judge plays a red Apple
         for p in p_list.iter_mut()
         {
             if can_play_apple(&p, &judge)
@@ -89,47 +90,53 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
                 red_cards.insert(p.get_id(), p.play_card()); //<-- Troublemaker
             }
         }
-        //I guess we do a foreach player, and have them pick a card. Skipping the Judge.
-        //8. Order is randomized before shown.
+
+        //Req 8. Order is randomized before shown.
         //TODO: Somehow grab the hashmap, shuffle it, and show to the judge?
 
         //Maybe make a function like judge.pick_card(cardlist)
         //in case we play voting we do foreach p in p_list, p.vote(p_list)
 
-        //9. All players must play a card before the results at 8 are shown.
+        //Req9. All players must play a card before the results at 8 are shown.
         /*if &red_cards.len()-0 == &p_list.len()-1 //if we use judge
         {
             todo!()
         }*/
-        //10a. Judge picks card, winner gets the green apple.
+
+        //Req 10a. Judge picks card, winner gets the green apple.
         let winner : i32 = judge.pick(&mut red_cards);
-        println!("THE WINNER IS {} who played:\n{}", &winner.to_string(), &red_cards.get(&winner).unwrap().get_title());
-        p_list[winner as usize].give_green(cur_green);
-        //10b. OR WE VOTE, however you cannot vote on your own
-        //11. All red apples end up in the discard pile.
-        println!("{} : {}", &red_cards.len().to_string(), &d_deck.get_size().to_string());
+        println!("\n\nTHE WINNER IS {} who played:\n{}", &winner.to_string(), &red_cards.get(&winner).unwrap().get_title());
+        reward_winner(&mut p_list[winner as usize], cur_green);
+        
+        //Req 10b. OR WE VOTE, however you cannot vote on your own
+        
+        //Req 11. All red apples end up in the discard pile.
         red_cards = send_to_discard(red_cards, d_deck);
-        println!("{} : {}", &red_cards.len().to_string(), &d_deck.get_size().to_string());
-        //Check if winner, else continue
+
+        //Req 14? check if winner, else continue
         if check_winner(&p_list)
         {
             println!("{} IS THE WINNER!!", &winner.to_string());
             break;
         }
 
-        //12. All players draw 7-n cards where n is their handsize
-        for p in p_list.iter_mut()
-        {
-            refill_hand(p, r_deck);
-        }
-        //13. Next player in the list becomes judge.
-        judge = next_judge(p_list, &judge).clone(); //TODO: FIX
-
+        //Show standings. Not a requirement of anything, just fun.
         println!("\nSTANDINGS:\n");
         for p in p_list.iter_mut()
         {
             println!("Player {} has: {} GREENS", p.get_id().to_string(), p.get_green_amount().to_string());
         }
+        println!("\n");
+
+
+        //Req 12. All players draw 7-n cards where n is their handsize
+        for p in p_list.iter_mut()
+        {
+            refill_hand(p, r_deck);
+        }
+
+        //Req 13. Next player in the list becomes judge.
+        judge = next_judge(p_list, &judge).clone(); //TODO: FIX
     }
 }
 
@@ -209,4 +216,9 @@ pub fn send_to_discard(rc: HashMap<i32, RedCard>, d : &mut Discard) -> HashMap<i
 pub fn can_play_apple(p: &Player, j : &Player) -> bool
 {
     return p.get_id() != j.get_id();
+}
+
+pub fn reward_winner(win : &mut Player, green : GreenCard)
+{
+    win.give_green(green);
 }
