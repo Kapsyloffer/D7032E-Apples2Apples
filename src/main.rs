@@ -73,5 +73,7 @@ fn join_lobby()-> std::io::Result<()>
 fn host_lobby()
 {
     println!("Lobby hosted at: [PORT]");
-    
+    //Choose number of bots
+    //MODE: Judge or vote?
+    //Maybe ability to change points?
 }
