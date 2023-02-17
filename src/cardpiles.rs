@@ -37,7 +37,7 @@ impl Setup for GreenDeck
         {
             if let Ok(line_str) = line 
             {
-                let parts: Vec<&str> = line_str.splitn(2, "] -").collect();
+                let parts: Vec<&str> = line_str.splitn(2, " -").collect();
                 if parts.len() == 2 
                 {
                     let new_green = GreenCard 

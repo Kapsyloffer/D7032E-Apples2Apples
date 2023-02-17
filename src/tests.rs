@@ -5,7 +5,6 @@ use crate::card::*;
 use crate::cardpiles::*;    
 use rand::Rng;
 use core::hash::*;
-use std::collections::HashMap;
 use std::hash::Hash;
 
 #[cfg(test)]
@@ -73,7 +72,7 @@ fn deal7_red_apples_to_each_player()  //Req 4
 
     let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
     //Generate a dummy deck for refilling
-    for _d in 0.. (p_list.len() * 7)
+    for _d in 0..(p_list.len() * 14)-1
     {
         let dummy_card = RedCard{title: "Dummy card".to_string(), desc: "Fill card".to_string()};
         dummy_deck.add_to_deck(dummy_card);
@@ -165,7 +164,7 @@ fn judge_picks_card_winner_gets_green_apple()  //Req 10
 {
     /* 
     let mut p_list : Vec<Player> = Vec::new();
-    let mut red_cards : HashMap<i32, RedCard> = HashMap::new();
+    let mut red_cards : Vec<(i32, RedCard)> = Vec::new();
     let green : GreenCard = GreenCard{title: "Dummy green".to_string(), desc: "Despite the name he's actually quite smart".to_string()};
     for i in 0..6 as usize
     {
@@ -204,7 +203,7 @@ fn judge_picks_card_winner_gets_green_apple()  //Req 10
 fn all_red_apples_go_to_discard()  //Req 11
 {
     let mut p_list : Vec<Player> = Vec::new();
-    let mut red_cards : HashMap<i32, RedCard> = HashMap::new();
+    let mut red_cards : Vec<(i32, RedCard)> = Vec::new();
     let mut discard : Discard = Discard{cards:Vec::new()};
     //create 5 bots
     for i in 0..5
@@ -219,7 +218,7 @@ fn all_red_apples_go_to_discard()  //Req 11
     //Have them all play their card into the red cards pile.
     for p in p_list.iter_mut()
     {
-        red_cards.insert(p.get_id(), p.play_card());
+        red_cards.push((p.get_id(), p.play_card()));
     }
     //Get size of redcards pile before trashing
     let sizeb4 = red_cards.len();

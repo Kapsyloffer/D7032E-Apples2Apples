@@ -1,7 +1,6 @@
 use crate::player::*;
 use crate::cardpiles::*;
 use crate::card::*;
-use std::collections::HashMap;
 use rand::Rng;
 
 pub fn init_game()
@@ -49,7 +48,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     let mut cur_green : GreenCard;
 
     //Include id so we can track the winner
-    let mut red_cards : HashMap<i32, RedCard> = HashMap::new();
+    let mut red_cards : Vec<(i32, RedCard)> = Vec::new();
 
     //Req 4. deal 7 cards to each player
     for p in p_list.iter_mut()
@@ -87,12 +86,12 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             {
                 //play_cards return a redcard, the idea is that
                 //the played redcard will go straight into the pile
-                red_cards.insert(p.get_id(), p.play_card()); //<-- Troublemaker
+                red_cards.push((p.get_id(), p.play_card())); //<-- Troublemaker
             }
         }
 
         //Req 8. Order is randomized before shown.
-        //TODO: Somehow grab the hashmap, shuffle it, and show to the judge?
+        //TODO: Somehow grab the vec, shuffle it, and show to the judge?
 
         //Maybe make a function like judge.pick_card(cardlist)
         //in case we play voting we do foreach p in p_list, p.vote(p_list)
@@ -105,7 +104,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
 
         //Req 10a. Judge picks card, winner gets the green apple.
         let winner : i32 = judge.pick(&mut red_cards);
-        println!("\n\nTHE WINNER IS {} who played:\n{}", &winner.to_string(), &red_cards.get(&winner).unwrap().get_title());
+        //println!("\n\nTHE WINNER IS {} who played:\n{}", &winner.to_string(), &red_cards.get(&winner).unwrap().get_title());
         reward_winner(&mut p_list[winner as usize], cur_green);
         
         //Req 10b. OR WE VOTE, however you cannot vote on your own
@@ -204,13 +203,13 @@ pub fn check_winner(p_list : &Vec<Player>) -> bool
     return false;
 }
 
-pub fn send_to_discard(rc: HashMap<i32, RedCard>, d : &mut Discard) -> HashMap<i32, RedCard>
+pub fn send_to_discard(rc: Vec<(i32, RedCard)>, d : &mut Discard) -> Vec<(i32, RedCard)>
 {
     for (_, c) in rc
     {
         d.add_to_discard(c);
     }
-    return HashMap::new(); //Ful lösning but eh
+    return Vec::new(); //Ful lösning but eh
 }
 
 pub fn can_play_apple(p: &Player, j : &Player) -> bool
@@ -221,4 +220,9 @@ pub fn can_play_apple(p: &Player, j : &Player) -> bool
 pub fn reward_winner(win : &mut Player, green : GreenCard)
 {
     win.give_green(green);
+}
+
+pub fn shuffle_before_showing(_: &mut Vec<(i32, RedCard)>) -> Vec<(i32, RedCard)>
+{  
+    todo!();
 }

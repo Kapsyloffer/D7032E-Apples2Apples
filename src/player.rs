@@ -1,7 +1,6 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
 use crate::card::*;
-use std::collections::HashMap;
 use std::net::TcpStream;
 use std::io::*;
 use rand::Rng;
@@ -24,25 +23,27 @@ pub trait PlayerActions
     fn get_hand_size(&self) -> u8;
     fn get_id(&self) -> i32;
     fn give_green(&mut self, g : GreenCard);
-    fn vote(&self, cards : HashMap<i32, RedCard>) -> i32;//winner ID
+    fn vote(&self, cards : &mut Vec<(i32, RedCard)>) -> i32;//winner ID
 }
 pub trait Judge
 {
-   fn pick(&self, cards : &mut HashMap<i32, RedCard>) -> i32;//winner ID
+   fn pick(&self, cards : &mut Vec<(i32, RedCard)>) -> i32;//winner ID
 }
 
 impl Judge for Player //TODO: TEST
 {
     #[allow(unused_variables)]
-    fn pick(&self, cards : &mut HashMap<i32, RedCard>) -> i32
+    fn pick(&self, cards : &mut Vec<(i32, RedCard)>) -> i32
     {
         let mut competitors : Vec<i32> = Vec::new();
         let c_size = &cards.len();
+        
         for c in cards
         {
             println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
-            competitors.push(*c.0);
+            competitors.push(c.0);
         }
+
         if self.is_bot
         {
             return competitors[rand::thread_rng().gen_range(0..competitors.len())];
@@ -142,17 +143,17 @@ impl PlayerActions for Player
         //ask for input,
     }
 
-    fn vote(&self, cards : HashMap<i32, RedCard>) -> i32 //TODO: TEST
+    fn vote(&self, cards : &mut Vec<(i32, RedCard)>) -> i32 //TODO: TEST
     {
         let mut competitors : Vec<i32> = Vec::new();
         let c_size = &cards.len();
         
-        for c in &cards
+        for c in cards
         {
-            if *c.0 != self.get_id()
+            if c.0 != self.get_id()
             {
                 println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
-                competitors.push(*c.0);
+                competitors.push(c.0);
             }
         }
         if self.is_bot
