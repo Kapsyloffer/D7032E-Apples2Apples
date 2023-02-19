@@ -1,2 +1,6 @@
 # D7032E-Apples2Apples
-Bruh det blev omtenta lmao
+Det blev omtenta rust editon
+
+## How do install:
+
+todo!()
