@@ -2,7 +2,7 @@
 use apples::game::*;
 use std::*;
 use std::net::*;
-use apples::networking::Client;
+use apples::networking::*;
 fn main() 
 {
     //menu_main();
@@ -60,7 +60,7 @@ fn join_lobby()-> std::io::Result<()>
         {
             Ok(ip4) =>
             {
-                let _c = Client{stream: None, ip : ip4, port : 1337};
+                let _c =  client_factory(ip4, 42069);
             },
             Err(e) =>
             {
