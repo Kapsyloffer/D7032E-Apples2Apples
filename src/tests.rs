@@ -150,15 +150,20 @@ fn judge_do_not_play_red_apple()  //Req 7
 #[test]
 fn order_of_cards_randomized_before_shown_to_judge()  //Req 8 (FIX)
 {
+    //Create a new vector of cards
     let mut cards: Vec<(i32, RedCard)> = Vec::new();
-    for i in 0..6
+    //Create 32 card entries.
+    for i in 0..32
     {
         cards.push((i, RedCard{title: format!("Dummy {}", i), desc: "Dummy card".to_string()}));
     }
 
+    //Cards before shuffle
     let b4_shuffle = cards.clone();
-    shuffle_before_showing(&mut cards);
-    assert_eq!(hash_value(b4_shuffle), hash_value(cards));
+    //Cards after shuffle
+    let cards = shuffle_before_showing(&mut cards);
+    //Check if it looks different.
+    assert_ne!(hash_value(b4_shuffle), hash_value(cards));
 }
 
 #[test]

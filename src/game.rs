@@ -231,23 +231,18 @@ pub fn reward_winner(win : &mut Player, green : GreenCard)
     win.give_green(green);
 }
 
-pub fn shuffle_before_showing(cards: &mut Vec<(i32, RedCard)>) -> Vec<(i32, RedCard)>
-{  
+pub fn shuffle_before_showing(cards: &Vec<(i32, RedCard)>) -> Vec<(i32, RedCard)> {
     //Fisher Yates shuffle algorithm
-    let mut deck : Vec<(i32, RedCard)> = cards.clone();
-    let size : u8 = deck.len() as u8;
+    let mut shuffled_deck = cards.clone();
+    let size = shuffled_deck.len();
 
-    for i in 0..size
-    {   
-        //Select last element
-        let j : (i32, RedCard) = deck.pop().unwrap();
-        //rnd [0 -> size-i]
-        let rnd : u8 = rand::thread_rng().gen_range(0..(size-i));
-        //Switch element[size] with element[size-i]
-        let k : (i32, RedCard) = deck[usize::from(rnd)].clone();
-        deck[usize::from(rnd)] = j;
-        deck.push(k);
+    for i in 0..size {
+        //Select random element
+        let j = rand::thread_rng().gen_range(i..size);
+        //Swap element at position i with element at position j
+        shuffled_deck.swap(i, j);
     }
-    //Set the current deck to the shuffled deck.
-    return deck;
+
+    // Return the shuffled deck
+    return shuffled_deck;
 }
