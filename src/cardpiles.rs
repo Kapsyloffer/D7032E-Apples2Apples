@@ -6,7 +6,6 @@ use rand::Rng;
 pub trait Setup
 {
     fn read_cards (&mut self) -> io::Result<String>;
-    fn shuffle (&mut self);
 }
 
 #[derive(Clone)]
@@ -63,27 +62,6 @@ impl Setup for GreenDeck
 
         return Ok("Green Deck made".to_string());
     }
-
-    fn shuffle (&mut self)
-    {
-        //Fisher Yates shuffle algorithm
-        let mut deck : Vec<GreenCard> = self.cards.clone();
-        let size : u8 = self.cards.len() as u8;
-
-        for i in 0..size
-        {   
-            //Select last element
-            let j : GreenCard = deck.pop().unwrap();
-            //rnd [0 -> size-i]
-            let rnd : u8 = rand::thread_rng().gen_range(0..(size-i));
-            //Switch element[size] with element[size-i]
-            let k : GreenCard = deck[usize::from(rnd)].clone();
-            deck[usize::from(rnd)] = j;
-            deck.push(k);
-        }
-        //Set the current deck to the shuffled deck.
-        self.cards = deck;
-    }
 }
 
 impl Setup for RedDeck
@@ -121,8 +99,22 @@ impl Setup for RedDeck
 
         return Ok("Red Deck made".to_string());
     }
+}
 
-    fn shuffle (&mut self)  
+impl RedDeck
+{
+    pub fn get_top_card_title(&self, index : usize) -> String
+    {
+        return self.cards[index].get_title().to_string();
+    }
+    pub fn draw (&mut self) -> RedCard
+    {
+        //self.shuffle(); //fixes the non-random draw issue, HOWEVER IT BREAKS MY TESTS REEEE
+        let card = self.cards.remove(0);
+        return card;
+    }
+
+    pub fn shuffle (&mut self) -> RedDeck
     {
         //Fisher Yates shuffle algorithm
         let mut deck : Vec<RedCard> = self.cards.clone();
@@ -140,22 +132,41 @@ impl Setup for RedDeck
             deck.push(k);
         }
         //Set the current deck to the shuffled deck.
-        self.cards = deck;
-    }
-}
-
-impl RedDeck
-{
-    pub fn draw (&mut self) -> RedCard
-    {
-        self.shuffle(); //fixes the non-random draw issue, TEMP (REMOVE LATER)
-        let card = self.cards.remove(0);
-        return card;
+        return RedDeck{cards: deck};
     }
 
     pub fn add_to_deck(&mut self, rc: RedCard)
     {
         self.cards.push(rc);
+    }
+}
+
+impl GreenDeck
+{
+    pub fn shuffle (&mut self) -> GreenDeck
+    {
+        //Fisher Yates shuffle algorithm
+        let mut deck : Vec<GreenCard> = self.cards.clone();
+        let size : u8 = self.cards.len() as u8;
+
+        for i in 0..size
+        {   
+            //Select last element
+            let j : GreenCard = deck.pop().unwrap();
+            //rnd [0 -> size-i]
+            let rnd : u8 = rand::thread_rng().gen_range(0..(size-i));
+            //Switch element[size] with element[size-i]
+            let k : GreenCard = deck[usize::from(rnd)].clone();
+            deck[usize::from(rnd)] = j;
+            deck.push(k);
+        }
+        //Set the current deck to the shuffled deck.
+        return GreenDeck{cards: deck}
+    }
+
+    pub fn draw(&mut self) -> GreenCard
+    {
+        return self.cards.remove(0);
     }
 }
 

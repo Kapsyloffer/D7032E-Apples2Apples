@@ -35,14 +35,23 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
 {
     
     //Req 1. Read all of the green apples
-    _ = r_deck.read_cards();
-
     //Req 2. Read all of the red apples 
     _ = g_deck.read_cards();
+    _ = r_deck.read_cards();
 
+    for i in 0..9
+    {
+        println!("{}", r_deck.get_top_card_title(i));
+    }
+    println!("");
     //Req 3. Shuffle both of the decks (Doesn't work for some reason)
-    r_deck.shuffle();
-    g_deck.shuffle();
+    *r_deck = r_deck.shuffle();
+    *g_deck = g_deck.shuffle();
+
+    for i in 0..9
+    {
+        println!("{}", r_deck.get_top_card_title(i));
+    }
 
     //This will always be the shown green card.
     let mut cur_green : GreenCard;
@@ -222,7 +231,23 @@ pub fn reward_winner(win : &mut Player, green : GreenCard)
     win.give_green(green);
 }
 
-pub fn shuffle_before_showing(_: &mut Vec<(i32, RedCard)>) -> Vec<(i32, RedCard)>
+pub fn shuffle_before_showing(cards: &mut Vec<(i32, RedCard)>) -> Vec<(i32, RedCard)>
 {  
-    todo!();
+    //Fisher Yates shuffle algorithm
+    let mut deck : Vec<(i32, RedCard)> = cards.clone();
+    let size : u8 = deck.len() as u8;
+
+    for i in 0..size
+    {   
+        //Select last element
+        let j : (i32, RedCard) = deck.pop().unwrap();
+        //rnd [0 -> size-i]
+        let rnd : u8 = rand::thread_rng().gen_range(0..(size-i));
+        //Switch element[size] with element[size-i]
+        let k : (i32, RedCard) = deck[usize::from(rnd)].clone();
+        deck[usize::from(rnd)] = j;
+        deck.push(k);
+    }
+    //Set the current deck to the shuffled deck.
+    return deck;
 }

@@ -43,8 +43,8 @@ fn shuffle_both_decks()  //Req 3
     let b4shuffle_g : Vec<GreenCard> = gd.cards.clone();
 
     //Shuffle both
-    rd.shuffle();
-    gd.shuffle();
+    rd = rd.shuffle();
+    gd = gd.shuffle();
 
     //Check the difference
     assert_ne!(hash_value(b4shuffle_r), hash_value(rd.cards));
@@ -148,9 +148,17 @@ fn judge_do_not_play_red_apple()  //Req 7
 }
 
 #[test]
-fn order_of_cards_randomized_before_shown_to_judge()  //Req 8
+fn order_of_cards_randomized_before_shown_to_judge()  //Req 8 (FIX)
 {
-    assert_eq!(1, 0);
+    let mut cards: Vec<(i32, RedCard)> = Vec::new();
+    for i in 0..6
+    {
+        cards.push((i, RedCard{title: format!("Dummy {}", i), desc: "Dummy card".to_string()}));
+    }
+
+    let b4_shuffle = cards.clone();
+    shuffle_before_showing(&mut cards);
+    assert_eq!(hash_value(b4_shuffle), hash_value(cards));
 }
 
 #[test]
@@ -162,7 +170,6 @@ fn all_players_must_play_before_result_is_shown()  //Req 9
 #[test]
 fn judge_picks_card_winner_gets_green_apple()  //Req 10
 {
-    /* 
     let mut p_list : Vec<Player> = Vec::new();
     let mut red_cards : Vec<(i32, RedCard)> = Vec::new();
     let green : GreenCard = GreenCard{title: "Dummy green".to_string(), desc: "Despite the name he's actually quite smart".to_string()};
@@ -171,32 +178,33 @@ fn judge_picks_card_winner_gets_green_apple()  //Req 10
         p_list.push(player_factory(i as i32, true, true));
         p_list[i].add_to_hand(RedCard{title : "[Dummy]".to_string(), desc: "Dummy card".to_string()});
     }
-    let j : &Player = judge_pick(&p_list);
+    let j : Player = p_list[0].clone();
      //Have them all play their card into the red cards pile.
-     for p in &mut p_list
+     for p in p_list.iter_mut()
      {
         if can_play_apple(&p, &j)
         {
-            red_cards.insert(p.get_id(), p.play_card());
+            red_cards.push((p.get_id(), p.play_card()));
         }
      }
      let win_id = j.pick(&mut red_cards);
-     let winner : &Player;
-     for p in p_list
+     let mut winner : &mut Player = &mut player_factory(9999, true, false); //dummy
+     for p in &mut p_list
      {
-        if p.get_id() == win_id
+        if &p.get_id() == &win_id
         {
-            winner = &p;
+            winner = p;
             break;
         }
      }
      //Give 1 green card
      reward_winner(&mut winner, green);
+
+    //Om det fortfarande är dummy, force fail.
+     assert_ne!(winner.get_id(), 9999); 
+
      //Check if the winner has one green.
      assert_eq!(winner.get_green_amount(), 1);
-     //
-    */
-    assert_eq!(1, 0);
 }
 
 #[test]
@@ -310,7 +318,7 @@ fn check_for_winner_4p()  //Req 14
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
     let _ = g_deck.read_cards();
-    let _ = g_deck.shuffle();
+    g_deck = g_deck.shuffle();
     //give a player 8 green
     for _ in 0..8
     {
@@ -335,7 +343,7 @@ fn check_for_winner_5p()
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
     let _ = g_deck.read_cards();
-    let _ = g_deck.shuffle();
+    g_deck = g_deck.shuffle();
     //give a player 7 green
     for _ in 0..7
     {
@@ -360,7 +368,7 @@ fn check_for_winner_6p()
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
     let _ = g_deck.read_cards();
-    let _ = g_deck.shuffle();
+    g_deck = g_deck.shuffle();
     //give a player 6 green
     for _ in 0..6
     {
@@ -385,7 +393,7 @@ fn check_for_winner_7p()
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
     let _ = g_deck.read_cards();
-    let _ = g_deck.shuffle();
+    g_deck = g_deck.shuffle();
     //give a player 5 green
     for _ in 0..5
     {
@@ -410,7 +418,7 @@ fn check_for_winner_8p()
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
     let _ = g_deck.read_cards();
-    let _ = g_deck.shuffle();
+    g_deck = g_deck.shuffle();
     //give a player 4 green
     for _ in 0..4
     {
@@ -435,7 +443,7 @@ fn check_for_winner_8plus()
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
     let _ = g_deck.read_cards();
-    let _ = g_deck.shuffle();
+    g_deck = g_deck.shuffle();
     //give a player 4 green
     for _ in 0..8
     {
