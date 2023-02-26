@@ -1,9 +1,20 @@
 use crate::player::*;
 use crate::cardpiles::*;
 use crate::card::*;
+use crate::settings::*;
+
 use rand::Rng;
 extern crate colorize;
 use colorize::*;
+
+
+
+//TODO: Future modifications
+/*
+- A phase before A that lets people discard cards from their hands.
+- Gamemode, either Judge or Vote.
+- Wild red apples.
+ */
 
 //Some simple setup.
 pub fn init_game()
@@ -18,6 +29,9 @@ pub fn init_game()
     //Add Players
     let mut p_list : Vec<Player> = Vec::new();
 
+    //Add default settings
+    let settings : Settings = custom_settings(false, true, 0);
+
     //THE player, somehow it fixes the unshuffled deck bug
     p_list.push(player_factory(0, false, true));
     //add dummy players
@@ -27,13 +41,13 @@ pub fn init_game()
     }
 
     //gameplay
-    gameplay(&mut r_deck, &mut g_deck, &mut d_deck, &mut p_list);
+    gameplay(&mut r_deck, &mut g_deck, &mut d_deck, &mut p_list, settings);
 
     //And that's all she wrote.
 }
 
 //Main gameplayloop happens here.
-fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discard, p_list : &mut Vec<Player>)
+fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discard, p_list : &mut Vec<Player>, settings: Settings)
 {
     
     //Req 1. Read all of the green apples
@@ -56,60 +70,103 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     {
         refill_hand(p, r_deck);
     }
-    /* 
-    for p in p_list.iter_mut()
-    {
-        for x in &p.hand
-        {
-            println!("{}: {}", p.get_id().to_string(), x.title);
-        }
-        println!("\n");
-    }*/
 
     //Req 5. pick judge
-    let mut judge : Player = judge_pick(&p_list).clone();
+    let mut judge : Player; 
+
+    if settings.use_judge()
+    {
+        judge = judge_pick(&p_list).clone();
+    }
+    else 
+    {
+        judge = player_factory(9999, true, true);
+    }
+
     loop
     {
         //"Clear" the screen
         //print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
 
-        //Announce judge
-        println!("{} is the Judge!\n", judge.get_id().to_string().yellow());
+        //If we use judge, announce, else nah.
+        if settings.use_judge()
+        {
+            //Announce the judge
+            println!("{} is the Judge!\n", judge.get_id().to_string().yellow());
+        }
 
         //Req 6. A green apple is drawn from the pile 
         cur_green = new_green(g_deck);
+
         //and shown to everyone
-        println!(" {}\n{}\n", &cur_green.get_title().green().bold(), &cur_green.get_desc().green()); //After this point, "cannot sample empty range"
+        println!(" {}\n{}\n", &cur_green.get_title().green().bold(), &cur_green.get_desc().green()); 
         
         //Req 7. All players except the judge plays a red Apple
+        //Req9. All players must play a card before the results at 8 are shown.
         for p in p_list.iter_mut()
         {
             if can_play_apple(&p, &judge)
             {
                 //play_cards return a redcard, the idea is that
                 //the played redcard will go straight into the pile
-                red_cards.push((p.get_id(), p.play_card())); //<-- Troublemaker
+                red_cards.push((p.get_id(), p.play_card())); 
             }
         }
 
         //Req 8. Order is randomized before shown.
-        //TODO: Somehow grab the vec, shuffle it, and show to the judge?
+        red_cards = shuffle_before_showing(&mut red_cards);
 
-        //Maybe make a function like judge.pick_card(cardlist)
-        //in case we play voting we do foreach p in p_list, p.vote(p_list)
+        let winner : i32;
 
-        //Req9. All players must play a card before the results at 8 are shown.
-        /*if &red_cards.len()-0 == &p_list.len()-1 //if we use judge
+        if settings.use_judge()
         {
-            todo!()
-        }*/
+            //Req 10a. Judge picks card, winner gets the green apple. Also shuffle order before showing.
+            winner = judge.pick(&mut red_cards);
+        }
+        else
+        {
+            //Req 10b. OR WE VOTE, however you cannot vote on your own (which is handled in player.rs)
+            let mut vote_counter : Vec<i32> = Vec::new();
 
-        //Req 10a. Judge picks card, winner gets the green apple. Also shuffle order before showing.
-        let winner : i32 = judge.pick(&mut shuffle_before_showing(&red_cards));
-        //println!("\n\nTHE WINNER IS {} who played:\n{}", &winner.to_string(), &red_cards.get(&winner).unwrap().get_title());
+            //Have everyone vote
+            for p in p_list.iter_mut()
+            {
+                vote_counter.push(p.vote(&mut red_cards));
+            }
+
+            
+            let mut freq: usize = 0;
+            let mut leader: i32 = 0;
+            //Count votes
+            for p in p_list.iter_mut()
+            {
+                //Count instances of player id in votes.
+                let mut new_freq = 0;
+                new_freq = vote_counter.iter().filter(|&n| *n == p.get_id()).count();
+
+                //Kolla votes.
+                println!("Player {} : {} votes", p.get_id(), new_freq);
+
+                //if one player has more than the other, he is the new leader.
+                if new_freq > freq
+                {
+                    leader = p.get_id();
+                } 
+                else if new_freq == freq
+                {
+                    //panic!("TIE");¨
+                }
+            }
+            //Player with the most votes is the winner.
+            winner = leader;
+        }
+
+        //Announce winner
+        print!("The winner is {}!", &winner.to_string().yellow());
+
+        //Give the winner the current green card. One potential problem here is that
+        //if one id gets disconnected it breaks.
         reward_winner(&mut p_list[winner as usize], cur_green);
-        
-        //Req 10b. OR WE VOTE, however you cannot vote on your own
         
         //Req 11. All red apples end up in the discard pile.
         red_cards = send_to_discard(red_cards, d_deck);
@@ -136,8 +193,11 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             refill_hand(p, r_deck);
         }
 
-        //Req 13. Next player in the list becomes judge.
-        judge = next_judge(p_list, &judge).clone(); //TODO: FIX
+        if(settings.use_judge())
+        {
+            //Req 13. Next player in the list becomes judge.
+            judge = next_judge(p_list, &judge).clone(); //TODO: FIX  
+        }
     }
 }
 
@@ -197,7 +257,7 @@ pub fn check_winner(p_list : &Vec<Player>) -> bool
         6=>limit = 6,
         7=>limit = 5,
         l if l >= 8 => limit = 4, //8+ players
-        _=> panic!("Wtf u doing bro") // <4 players
+        _=> panic!("Less than 4 players wtf") // <4 players
     }
     for p in p_list
     {
