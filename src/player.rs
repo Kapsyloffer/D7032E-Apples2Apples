@@ -5,6 +5,10 @@ use std::net::TcpStream;
 use std::io::*;
 use rand::Rng;
 use std::io;
+
+extern crate colorize;
+use colorize::*;
+
 #[derive(Clone)]
 pub struct Player //I guess all networking handlas av Client
 {
@@ -19,20 +23,19 @@ pub trait PlayerActions
 {
     fn play_card (&mut self) -> RedCard;
     fn get_green_amount (&self) -> u8;
-    fn add_to_hand(&mut self, rc : RedCard);
+    fn add_to_hand(&mut self, rc : RedCard); 
     fn get_hand_size(&self) -> u8;
     fn get_id(&self) -> i32;
     fn give_green(&mut self, g : GreenCard);
-    fn vote(&self, cards : &mut Vec<(i32, RedCard)>) -> i32;//winner ID
+    fn vote(&self, cards : &mut Vec<(i32, RedCard)>) -> i32; //returns the selected ID
 }
 pub trait Judge
 {
-   fn pick(&self, cards : &mut Vec<(i32, RedCard)>) -> i32;//winner ID
+   fn pick(&self, cards : &mut Vec<(i32, RedCard)>) -> i32; //returns the winner ID
 }
 
-impl Judge for Player //TODO: TEST
+impl Judge for Player
 {
-    #[allow(unused_variables)]
     fn pick(&self, cards : &mut Vec<(i32, RedCard)>) -> i32
     {
         let mut competitors : Vec<i32> = Vec::new();
@@ -40,7 +43,7 @@ impl Judge for Player //TODO: TEST
         
         for c in cards
         {
-            println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
+            println!(" {}: {}\n{}", competitors.len().to_string().yellow(), c.1.get_title().red().bold(), c.1.get_desc().red());
             competitors.push(c.0);
         }
 
@@ -52,7 +55,8 @@ impl Judge for Player //TODO: TEST
         {
             loop 
             {
-                println!("YOU ARE THE JUDGE\nPick the best card: ");
+                println!("{}", "\n==YOU ARE THE JUDGE==\n".yellow().bold());
+                println!("=== {} ===", "Pick the best card".cyan());
                 let mut input = String::new();
                 io::stdin().read_line(&mut input).expect("Failed to read line");
 
@@ -76,11 +80,13 @@ impl Judge for Player //TODO: TEST
 
 impl PlayerActions for Player
 {
+    //Used for drawing cards.
     fn add_to_hand(&mut self, rc : RedCard) 
     {
         self.hand.push(rc);
     }
 
+    //If this player won the turn, give them the green.
     fn give_green(&mut self, g : GreenCard) 
     {
         self.green_apples.push(g);
@@ -103,9 +109,9 @@ impl PlayerActions for Player
         return self.player_id;
     }
 
-    fn play_card (&mut self) -> RedCard  //TODO: TEST
+    fn play_card (&mut self) -> RedCard 
     {
-        //if bot, do random, else pick
+        //if bot, do random, else let the player pick
         if self.is_bot
         {
             return self.hand.remove(rand::thread_rng().gen_range(0..self.hand.len()));
@@ -113,14 +119,16 @@ impl PlayerActions for Player
         else
         {
             let mut i = 0;
+            //Print out each card in hand
             for c in self.hand.iter_mut()
             {
-                println!("{}:  {} - {}", i.to_string(), c.get_title(), c.get_desc());
+                println!("{}: {}\n -{}", i.to_string().yellow(), c.get_title().red().bold(), c.get_desc().red());
                 i+=1;
             }
+            //Then let the player select em.
             loop 
             {
-                println!("Pick your card:");
+                println!("\n === {} ===", "Pick your card".cyan());
                 let mut input = String::new();
                 io::stdin().read_line(&mut input).expect("Failed to read line");
 
@@ -148,19 +156,22 @@ impl PlayerActions for Player
         let mut competitors : Vec<i32> = Vec::new();
         let c_size = &cards.len();
         
+        //print out each card not played by the player (random ofc)
         for c in cards
         {
             if c.0 != self.get_id()
             {
                 println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
-                competitors.push(c.0);
+                competitors.push(c.0); //push ID to a vector, so if we pick 
+                //card 0 it sends the id of card 0 instead
             }
         }
+        //Same as in Judge, bots pick at random.
         if self.is_bot
         {
             return competitors[rand::thread_rng().gen_range(0..competitors.len())];
         }
-        else
+        else //player input
         {
             loop 
             {
@@ -172,7 +183,7 @@ impl PlayerActions for Player
                 {
                     Ok(num) if num < *c_size => 
                     {
-                        return competitors[num];
+                        return competitors[num]; //return the id of the best player
                     },
                     _ => 
                     {
@@ -185,12 +196,14 @@ impl PlayerActions for Player
     }
 }
 
-pub fn player_factory (id : i32, bot : bool, o: bool) -> Player
+//probably the easiest way to create a new player
+pub fn player_factory (id : i32, bot : bool, o: bool) -> Player 
 {
     let p : Player = Player
     {
         player_id : id,
         is_bot : bot,
+        //tbh I have no idea of why online is a thing, but it was in the og code so I'll let it be.
         online : o,
         hand : Vec::new(),
         green_apples : Vec::new(),

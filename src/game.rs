@@ -2,6 +2,8 @@ use crate::player::*;
 use crate::cardpiles::*;
 use crate::card::*;
 use rand::Rng;
+extern crate colorize;
+use colorize::*;
 
 pub fn init_game()
 {
@@ -15,12 +17,13 @@ pub fn init_game()
     //Add Players
     let mut p_list : Vec<Player> = Vec::new();
 
+    //THE player, somehow it fixes the unshuffled deck bug
+    p_list.push(player_factory(0, false, true));
     //add dummy players
-    for i in 0..5
+    for i in 1..6
     {
-        p_list.push(player_factory(i, true, false));
+        p_list.push(player_factory(i, true, false)); //TODO: Real players
     }
-    p_list.push(player_factory(5, false, true));
 
     //gameplay
     gameplay(&mut r_deck, &mut g_deck, &mut d_deck, &mut p_list);
@@ -39,19 +42,9 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     _ = g_deck.read_cards();
     _ = r_deck.read_cards();
 
-    for i in 0..9
-    {
-        println!("{}", r_deck.get_top_card_title(i));
-    }
-    println!("");
-    //Req 3. Shuffle both of the decks (Doesn't work for some reason)
+    //Req 3. Shuffle both of the decks
     *r_deck = r_deck.shuffle();
     *g_deck = g_deck.shuffle();
-
-    for i in 0..9
-    {
-        println!("{}", r_deck.get_top_card_title(i));
-    }
 
     //This will always be the shown green card.
     let mut cur_green : GreenCard;
@@ -64,6 +57,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     {
         refill_hand(p, r_deck);
     }
+    /* 
     for p in p_list.iter_mut()
     {
         for x in &p.hand
@@ -71,7 +65,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             println!("{}: {}", p.get_id().to_string(), x.title);
         }
         println!("\n");
-    }
+    }*/
 
     //Req 5. pick judge
     let mut judge : Player = judge_pick(&p_list).clone();
@@ -81,12 +75,12 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         //print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
 
         //Announce judge
-        println!("{} is the Judge!\n", judge.get_id().to_string());
+        println!("{} is the Judge!\n", judge.get_id().to_string().yellow());
 
         //Req 6. A green apple is drawn from the pile 
         cur_green = g_deck.cards.remove(0);
         //and shown to everyone
-        println!("{}\n{}", &cur_green.get_title(), &cur_green.get_desc()); //After this point, "cannot sample empty range"
+        println!(" {}\n{}\n", &cur_green.get_title().green().bold(), &cur_green.get_desc().green()); //After this point, "cannot sample empty range"
         
         //Req 7. All players except the judge plays a red Apple
         for p in p_list.iter_mut()
@@ -111,8 +105,8 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             todo!()
         }*/
 
-        //Req 10a. Judge picks card, winner gets the green apple.
-        let winner : i32 = judge.pick(&mut red_cards);
+        //Req 10a. Judge picks card, winner gets the green apple. Also shuffle order before showing.
+        let winner : i32 = judge.pick(&mut shuffle_before_showing(&red_cards));
         //println!("\n\nTHE WINNER IS {} who played:\n{}", &winner.to_string(), &red_cards.get(&winner).unwrap().get_title());
         reward_winner(&mut p_list[winner as usize], cur_green);
         
@@ -124,15 +118,15 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         //Req 14? check if winner, else continue
         if check_winner(&p_list)
         {
-            println!("{} IS THE WINNER!!", &winner.to_string());
+            println!("\n====== {}{} ======", &winner.to_string().green().bold(), " IS THE WINNER!!".bold().green());
             break;
         }
 
         //Show standings. Not a requirement of anything, just fun.
-        println!("\nSTANDINGS:\n");
+        println!("\n====== {} ======", "STANDINGS".yellow());
         for p in p_list.iter_mut()
         {
-            println!("Player {} has: {} GREENS", p.get_id().to_string(), p.get_green_amount().to_string());
+            println!("Player {} has: {} GREENS", p.get_id().to_string().yellow(), p.get_green_amount().to_string().green());
         }
         println!("\n");
 
