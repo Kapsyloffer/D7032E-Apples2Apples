@@ -12,7 +12,7 @@ use colorize::*;
 //TODO: Future modifications
 /*
 - A phase before A that lets people discard cards from their hands.
-- Gamemode, either Judge or Vote.
+- Gamemode, either Judge or Vote. --DONE
 - Wild red apples.
  */
 
@@ -80,7 +80,8 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     }
     else 
     {
-        judge = player_factory(9999, true, true);
+        //create a dummy judge if we use votes.
+        judge = player_factory(9999, true, true); 
     }
 
     loop
@@ -125,7 +126,8 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         }
         else
         {
-            //Req 10b. OR WE VOTE, however you cannot vote on your own (which is handled in player.rs)
+            //Req 10b. OR WE VOTE, however you cannot vote on your own (which is handled in player.rs)'
+            
             let mut vote_counter : Vec<i32> = Vec::new();
 
             //Have everyone vote
@@ -133,32 +135,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             {
                 vote_counter.push(p.vote(&mut red_cards));
             }
-
-            
-            let mut freq: usize = 0;
-            let mut leader: i32 = 0;
-            //Count votes
-            for p in p_list.iter_mut()
-            {
-                //Count instances of player id in votes.
-                let mut new_freq = 0;
-                new_freq = vote_counter.iter().filter(|&n| *n == p.get_id()).count();
-
-                //Kolla votes.
-                println!("Player {} : {} votes", p.get_id(), new_freq);
-
-                //if one player has more than the other, he is the new leader.
-                if new_freq > freq
-                {
-                    leader = p.get_id();
-                } 
-                else if new_freq == freq
-                {
-                    //panic!("TIE");¨
-                }
-            }
-            //Player with the most votes is the winner.
-            winner = leader;
+            winner = count_votes(&p_list, &mut vote_counter);
         }
 
         //Announce winner
@@ -193,7 +170,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             refill_hand(p, r_deck);
         }
 
-        if(settings.use_judge())
+        if settings.use_judge()
         {
             //Req 13. Next player in the list becomes judge.
             judge = next_judge(p_list, &judge).clone(); //TODO: FIX  
@@ -312,4 +289,37 @@ pub fn shuffle_before_showing(cards: &Vec<(i32, RedCard)>) -> Vec<(i32, RedCard)
 pub fn new_green(g_deck : &mut GreenDeck) -> GreenCard
 {
     return g_deck.draw();
+}
+
+//Count the votes and return the winner ID.
+pub fn count_votes(p_list : &Vec<Player>, vote_counter : &mut Vec<i32>) -> i32
+{
+    // Count votes
+    let mut max_votes = 0;
+    let mut max_player_ids: Vec<i32> = Vec::new();
+    for p in p_list.iter() 
+    {
+        let vote_count = vote_counter.iter().filter(|&n| *n == p.get_id()).count();
+        if vote_count > max_votes 
+        {
+            max_votes = vote_count;
+            max_player_ids = vec![p.get_id()];
+        } 
+        else if vote_count == max_votes 
+        {
+            max_player_ids.push(p.get_id());
+        }
+    }
+
+    // If there's a tie, randomly choose a player to eliminate
+    if max_player_ids.len() > 1 
+    {
+        let random_index = rand::thread_rng().gen_range(0 .. max_player_ids.len());
+        return max_player_ids[random_index];
+        // eliminate the player with the specified ID
+    }
+    else 
+    {
+        return max_player_ids[0];
+    }
 }

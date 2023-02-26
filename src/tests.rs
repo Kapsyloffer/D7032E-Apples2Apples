@@ -10,7 +10,7 @@ use std::hash::Hash;
 #[cfg(test)]
 //SETUP
 #[test]
-fn read_all_green_apples() //Req 1
+fn read_all_green_apples_req1() //Req 1
 {
     //Create a new deck
     let mut _gc : GreenDeck = GreenDeck {cards : Vec::new()};
@@ -24,7 +24,7 @@ fn read_all_green_apples() //Req 1
     assert!(b4 < after);
 }
 #[test]
-fn read_all_red_apples()  //Req 2
+fn read_all_red_apples_req2()  //Req 2
 {
     //Create a new deck
     let mut _rc : RedDeck = RedDeck {cards : Vec::new()};
@@ -38,7 +38,7 @@ fn read_all_red_apples()  //Req 2
     assert!(b4 < after);
 }
 #[test]
-fn shuffle_both_decks()  //Req 3
+fn shuffle_both_decks_req3()  //Req 3
 {
     //Makes new instances of the decks
     let mut rd = RedDeck{ cards : Vec::new()};
@@ -74,7 +74,7 @@ fn hash_value<T: Hash>(deck: T) -> u64
 }
 
 #[test]
-fn deal7_red_apples_to_each_player()  //Req 4
+fn deal7_red_apples_to_each_player_req4()  //Req 4
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -108,7 +108,7 @@ fn deal7_red_apples_to_each_player()  //Req 4
 }
 
 #[test]
-fn pick_a_judge_at_random()  //Req 5
+fn pick_a_judge_at_random_req5()  //Req 5
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -144,7 +144,13 @@ fn pick_a_judge_at_random()  //Req 5
 //GAMEPLAY
 
 #[test]
-fn green_apple_drawn_and_shown_to_everyone()  //Req 6
+fn allow_players_to_discard_their_hands_before_phase_a() //Idk which requirement this is.
+{
+    assert_eq!(0, 1);
+}
+
+#[test]
+fn green_apple_drawn_and_shown_to_everyone_req6()  //Req 6
 {
     let dummy1 = GreenCard{title: "dummy".to_string(), desc: "thicc".to_string()};
     let mut dummy2 = GreenCard{title: "dummy".to_string(), desc: "thicc".to_string()};
@@ -167,7 +173,7 @@ fn green_apple_drawn_and_shown_to_everyone()  //Req 6
 }
 
 #[test]
-fn judge_do_not_play_red_apple()  //Req 7
+fn judge_do_not_play_red_apple_req7()  //Req 7
 {
     //Make 3 players.
     let p1: Player = player_factory(1, true, true);
@@ -185,7 +191,7 @@ fn judge_do_not_play_red_apple()  //Req 7
 }
 
 #[test]
-fn order_of_cards_randomized_before_shown_to_judge()  //Req 8
+fn order_of_cards_randomized_before_shown_to_judge_req8()  //Req 8
 {
     //Create a new vector of cards
     let mut cards: Vec<(i32, RedCard)> = Vec::new();
@@ -210,7 +216,7 @@ fn order_of_cards_randomized_before_shown_to_judge()  //Req 8
 }
 
 #[test]
-fn all_players_must_play_before_result_is_shown()  //Req 9
+fn all_players_must_play_before_result_is_shown_req9()  //Req 9
 {
     //This is already done by forcing each player to play before we can procees with the game
     //The consequence is that some player may stall the game, but in the case of bots
@@ -219,7 +225,7 @@ fn all_players_must_play_before_result_is_shown()  //Req 9
 }
 
 #[test]
-fn judge_picks_card_winner_gets_green_apple()  //Req 10
+fn judge_picks_card_winner_gets_green_apple_req10a()  //Req 10
 {
     let mut p_list : Vec<Player> = Vec::new();
     let mut red_cards : Vec<(i32, RedCard)> = Vec::new();
@@ -266,7 +272,70 @@ fn judge_picks_card_winner_gets_green_apple()  //Req 10
 }
 
 #[test]
-fn all_red_apples_go_to_discard()  //Req 11
+fn test_vote_count_req10b() //Technically Req 10b
+{
+    //skapa en totally legit vote count.
+    let mut vote_count : Vec<i32> = [0, 0, 0, 0, 0, 0].to_vec();
+    let mut p_list : Vec<Player> = Vec::new();
+    
+    //fyll p_list med dummies
+    for i in 0..8
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+
+    //testa med massa nollor
+    assert_eq!(count_votes(&p_list, &mut vote_count), 0);
+
+    //testa med allt utom 0,
+    vote_count = [1,2,3,4,5,6,6].to_vec();
+    
+    //testa med massa nollor
+    assert_eq!(count_votes(&p_list, &mut vote_count), 6);
+}
+
+#[test]
+fn test_vote_tiebreaker_req10b() //Technically Req 10b
+{
+    //skapa en totally legit vote count.
+    let mut vote_count : Vec<i32> = [0, 0, 0, 0, 0, 0].to_vec();
+    let mut p_list : Vec<Player> = Vec::new();
+    
+    //vi har två spelare, player 1 och 2
+    p_list.push(player_factory(1, true, true));
+    p_list.push(player_factory(2, true, true));
+
+    //testa med allt utom 0,
+    vote_count = [1,2].to_vec();
+
+    //nu ska vi testa tiebreakern genom att se om den väljer samma varje gång eller om det är random.
+    let mut team1 = 0;
+    let mut team2 = 0;
+
+    //Räkna antalet loops
+    let mut loop_count = 0;
+
+    //välj en av vinnarna x antal gånger
+    for _ in 0..100
+    {
+        loop_count +=1;
+        if count_votes(&p_list, &mut vote_count) == 1
+        {
+            team1 += 1;
+        }
+        else 
+        {
+            team2 += 1;
+        }
+    }
+
+    //testa om de är olika.
+    assert_ne!(loop_count, team1);
+    assert_ne!(loop_count, team2);
+}
+
+#[test]
+fn all_red_apples_go_to_discard_req11()  //Req 11
 {
     let mut p_list : Vec<Player> = Vec::new();
     let mut red_cards : Vec<(i32, RedCard)> = Vec::new();
@@ -303,7 +372,7 @@ fn all_red_apples_go_to_discard()  //Req 11
 }
 
 #[test]
-fn all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we start with cards in hand)
+fn all_players_draw_up_to_seven_req12()  //Req 12 (Literally just Req4 but we start with cards in hand)
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -347,7 +416,7 @@ fn all_players_draw_up_to_seven()  //Req 12 (Literally just Req4 but we start wi
 }
 
 #[test]
-fn next_player_in_list_becomes_judge()  //Req 13
+fn next_player_in_list_becomes_judge_req13()  //Req 13
 {
     let mut p_list : Vec<Player> = Vec::new();
     //add like 11 boys
@@ -381,7 +450,7 @@ fn next_player_in_list_becomes_judge()  //Req 13
 }
 
 #[test]
-fn check_for_winner_4p()  //Req 14
+fn check_for_winner_4p_req14a()  //Req 14
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -411,7 +480,7 @@ fn check_for_winner_4p()  //Req 14
 }
 
 #[test]
-fn check_for_winner_5p() 
+fn check_for_winner_5p_req14a() 
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -441,7 +510,7 @@ fn check_for_winner_5p()
 }
 
 #[test]
-fn check_for_winner_6p() 
+fn check_for_winner_6p_req14a() 
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -471,7 +540,7 @@ fn check_for_winner_6p()
 }
 
 #[test]
-fn check_for_winner_7p() 
+fn check_for_winner_7p_req14a() 
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -501,7 +570,7 @@ fn check_for_winner_7p()
 }
 
 #[test]
-fn check_for_winner_8p() 
+fn check_for_winner_8p_req14a() 
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -531,7 +600,7 @@ fn check_for_winner_8p()
 }
 
 #[test]
-fn check_for_winner_8plus() 
+fn check_for_winner_8plus_req14a() 
 {
     let mut p_list : Vec<Player> = Vec::new();
 
@@ -558,4 +627,10 @@ fn check_for_winner_8plus()
 
     //check
     assert_eq!(true, check_winner(&p_list));
+}
+
+#[test]
+fn check_for_winner_custom_req14b()
+{
+    assert_eq!(1, 0);
 }

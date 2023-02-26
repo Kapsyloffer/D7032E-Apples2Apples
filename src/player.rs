@@ -161,7 +161,10 @@ impl PlayerActions for Player
         {
             if c.0 != self.get_id()
             {
-                println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
+                if !self.is_bot
+                {
+                    println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
+                }
                 competitors.push(c.0); //push ID to a vector, so if we pick 
                 //card 0 it sends the id of card 0 instead
             }
@@ -182,7 +185,8 @@ impl PlayerActions for Player
                 let _ = match input.trim().parse::<usize>() 
                 {
                     Ok(num) if num < *c_size => 
-                    {
+                    { 
+                        println!("You chose {}", competitors[num].to_string());
                         return competitors[num]; //return the id of the best player
                     },
                     _ => 
