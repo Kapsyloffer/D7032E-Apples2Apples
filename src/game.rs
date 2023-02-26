@@ -5,6 +5,7 @@ use rand::Rng;
 extern crate colorize;
 use colorize::*;
 
+//Some simple setup.
 pub fn init_game()
 {
     //TODO:: HOST?
@@ -31,9 +32,7 @@ pub fn init_game()
     //And that's all she wrote.
 }
 
-
-#[allow(dead_code)]
-#[allow(unused_variables)]
+//Main gameplayloop happens here.
 fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discard, p_list : &mut Vec<Player>)
 {
     
@@ -78,7 +77,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         println!("{} is the Judge!\n", judge.get_id().to_string().yellow());
 
         //Req 6. A green apple is drawn from the pile 
-        cur_green = g_deck.cards.remove(0);
+        cur_green = new_green(g_deck);
         //and shown to everyone
         println!(" {}\n{}\n", &cur_green.get_title().green().bold(), &cur_green.get_desc().green()); //After this point, "cannot sample empty range"
         
@@ -142,7 +141,8 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     }
 }
 
-pub fn refill_hand(p : &mut Player, red_deck : &mut RedDeck) //TODO: Change to REDDECK
+//Have all players draw up to 7 from anywhere.
+pub fn refill_hand(p : &mut Player, red_deck : &mut RedDeck)
 {
     while p.get_hand_size() < 7
     {
@@ -150,12 +150,14 @@ pub fn refill_hand(p : &mut Player, red_deck : &mut RedDeck) //TODO: Change to R
     }
 }
 
+//Pick one judge at random.
 pub fn judge_pick(p_list : &Vec<Player>) -> &Player
 {
     let selected_index = Some(rand::thread_rng().gen_range(0..p_list.len()));
     return &p_list[selected_index.unwrap()];
 }
 
+//Picks out the next judge in the list. Resets to 0 if needed.
 pub fn next_judge<'a>(p_list: &'a Vec<Player>, cur_judge: &'a Player) -> &'a Player
 {
     let mut i = 0;
@@ -183,6 +185,7 @@ pub fn next_judge<'a>(p_list: &'a Vec<Player>, cur_judge: &'a Player) -> &'a Pla
     return next_judge;
 }
 
+//Check winner requirement at the end of each game.
 pub fn check_winner(p_list : &Vec<Player>) -> bool
 {
     let limit : u8;
@@ -206,6 +209,7 @@ pub fn check_winner(p_list : &Vec<Player>) -> bool
     return false;
 }
 
+//Add all of the played cards to discard, returns new discard for testing.
 pub fn send_to_discard(rc: Vec<(i32, RedCard)>, d : &mut Discard) -> Vec<(i32, RedCard)>
 {
     for (_, c) in rc
@@ -215,16 +219,19 @@ pub fn send_to_discard(rc: Vec<(i32, RedCard)>, d : &mut Discard) -> Vec<(i32, R
     return Vec::new(); //Ful lösning but eh
 }
 
+//Disallows judge from playing apple.
 pub fn can_play_apple(p: &Player, j : &Player) -> bool
 {
     return p.get_id() != j.get_id();
 }
 
+//Give the winner a green card.
 pub fn reward_winner(win : &mut Player, green : GreenCard)
 {
     win.give_green(green);
 }
 
+//As per requirement 8 we have to shuffle the cards before showing.
 pub fn shuffle_before_showing(cards: &Vec<(i32, RedCard)>) -> Vec<(i32, RedCard)> {
     //Fisher Yates shuffle algorithm
     let mut shuffled_deck = cards.clone();
@@ -239,4 +246,10 @@ pub fn shuffle_before_showing(cards: &Vec<(i32, RedCard)>) -> Vec<(i32, RedCard)
 
     // Return the shuffled deck
     return shuffled_deck;
+}
+
+//Draw a new green card. Req 6
+pub fn new_green(g_deck : &mut GreenDeck) -> GreenCard
+{
+    return g_deck.draw();
 }
