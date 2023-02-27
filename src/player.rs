@@ -28,6 +28,7 @@ pub trait PlayerActions
     fn get_id(&self) -> i32;
     fn give_green(&mut self, g : GreenCard);
     fn vote(&self, cards : &mut Vec<(i32, RedCard)>) -> i32; //returns the selected ID
+    fn prompt_discard(&mut self);
 }
 pub trait Judge
 {
@@ -197,6 +198,11 @@ impl PlayerActions for Player
                 };
             }
         }
+    }
+
+    fn prompt_discard(&mut self) 
+    {
+        todo!();
     }
 }
 

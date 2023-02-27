@@ -4,7 +4,8 @@ pub struct Settings
     pub (self) judge : bool,
     pub (self) discard: bool,
     pub (self) wild_apples: i32,
-    pub (self) winreq: Vec<(i32, i32)>
+    pub (self) winreq: Vec<(i32, i32)>,
+    pub (self) bots : u8,
 }
 
 impl Settings
@@ -23,9 +24,14 @@ impl Settings
     {
         return self.wild_apples;
     }
+
+    pub fn get_bots (&self) -> u8
+    {
+        return self.bots;
+    }
 }
 
-pub fn custom_settings(j: bool, d: bool, w: i32) -> Settings
+pub fn custom_settings(j: bool, d: bool, w: i32, b: u8) -> Settings
 {
     return Settings
     {
@@ -33,6 +39,7 @@ pub fn custom_settings(j: bool, d: bool, w: i32) -> Settings
         discard: d,
         wild_apples: w,
         winreq: Vec::new(),
+        bots: b,
     };
 }
 
@@ -44,5 +51,6 @@ pub fn default_settings() -> Settings
         discard: false,
         wild_apples: 0,
         winreq: Vec::new(),
+        bots: 5,
     };
 }

@@ -15,9 +15,9 @@ pub fn menu_main()
     {
         print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
         println!("Apples To Apples:");
-        println!("1. Join Lobby (WIP)");
-        println!("2. Create Lobby");
-        println!("0. Exit");
+        println!("{}. Join Lobby (WIP)", "[1]".to_string().bold().yellow());
+        println!("{}. Create Lobby", "[2]".to_string().bold().yellow());
+        println!("{}. Exit", "[0]".to_string().bold().yellow());
 
         let mut input = String::new();
 
@@ -71,10 +71,10 @@ fn join_lobby()-> std::io::Result<()>
 fn host_lobby()
 {
     //settings
-    let mut j = true;
-    let mut d = false;
-    let mut w = 0;
-    let mut b = 3;
+    let mut j : bool = true;
+    let mut d : bool = false;
+    let mut w : i32 = 0;
+    let mut b : u8 = 5;
     let mut modified = false;
     //println!("Lobby hosted at: [PORT]");
     loop 
@@ -89,10 +89,10 @@ fn host_lobby()
         else{
             println!("Press 0 to play (modified)");
         }
-        println!("Press 1 to toggle judge ({})", if j {j.to_string().green()} else {j.to_string().red()});
-        println!("Press 2 to toggle discard phase ({})", if d {d.to_string().green()} else {d.to_string().red()});
-        println!("Press 3 to set # of wild apples ({})", if w > 0 {w.to_string().green()} else {w.to_string().red()});
-        println!("Press 4 to set # of bots ({}) (min 3)", if b == 3 {b.to_string().yellow()} else {b.to_string().green()});
+        println!("[1] Toggle judge ({})", if j {j.to_string().green()} else {j.to_string().red()});
+        println!("[2] Toggle discard phase ({})", if d {d.to_string().green()} else {d.to_string().red()});
+        println!("[3] Set # of wild apples ({})", if w > 0 {w.to_string().green()} else {w.to_string().red()});
+        println!("[4] Set # of bots ({}) (min {})", b.to_string().green(), "3".to_string().bold().yellow());
         println!("\n=== press {} to return ===", "q".to_string().yellow());
 
         //Input handling
@@ -140,7 +140,7 @@ fn host_lobby()
                 println!("How many wild apples do you want? Currently: {}", b.to_string());
                 let mut input_4 = String::new();
                 io::stdin().read_line(&mut input_4).expect("Failed to read line");
-                match input_4.trim().parse::<i32>()
+                match input_4.trim().parse::<u8>()
                 {
                     Ok(num) => 
                     {
@@ -164,7 +164,7 @@ fn host_lobby()
                 }
                 else 
                 {
-                    init_game(custom_settings(j, d, w));
+                    init_game(custom_settings(j, d, w, b));
                 }
                 break;
             }

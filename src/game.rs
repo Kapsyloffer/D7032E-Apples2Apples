@@ -35,7 +35,7 @@ pub fn init_game(settings : Settings)
     //THE player, somehow it fixes the unshuffled deck bug
     p_list.push(player_factory(0, false, true));
     //add dummy players
-    for i in 1..6
+    for i in 1..(settings.get_bots() as i32) +1
     {
         p_list.push(player_factory(i, true, false)); //TODO: Real players
     }
@@ -50,10 +50,17 @@ pub fn init_game(settings : Settings)
 fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discard, p_list : &mut Vec<Player>, settings: Settings)
 {
     
+    print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
     //Req 1. Read all of the green apples
     //Req 2. Read all of the red apples 
     _ = g_deck.read_cards();
     _ = r_deck.read_cards();
+
+    if settings.wild_red_apples() > 0
+    {
+        //Add some to the red deck
+        todo!()
+    }
 
     //Req 3. Shuffle both of the decks
     *r_deck = r_deck.shuffle();
@@ -88,6 +95,15 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     {
         //"Clear" the screen
         //print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
+
+        //before phase A, prompt discard
+        if settings.use_discard()
+        {
+            for p in p_list.iter_mut()
+            {
+                p.prompt_discard();
+            }
+        }
 
         //If we use judge, announce, else nah.
         if settings.use_judge()
