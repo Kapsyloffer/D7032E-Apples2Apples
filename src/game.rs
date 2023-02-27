@@ -17,7 +17,7 @@ use colorize::*;
  */
 
 //Some simple setup.
-pub fn init_game()
+pub fn init_game(settings : Settings)
 {
     //TODO:: HOST?
 
@@ -30,7 +30,7 @@ pub fn init_game()
     let mut p_list : Vec<Player> = Vec::new();
 
     //Add default settings
-    let settings : Settings = custom_settings(false, true, 0);
+    //let settings : Settings = custom_settings(false, true, 0);
 
     //THE player, somehow it fixes the unshuffled deck bug
     p_list.push(player_factory(0, false, true));
