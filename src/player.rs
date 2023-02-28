@@ -1,6 +1,7 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
 use crate::card::*;
+use std::collections::HashMap;
 use std::net::TcpStream;
 use std::io::*;
 use rand::Rng;
@@ -202,7 +203,83 @@ impl PlayerActions for Player
 
     fn prompt_discard(&mut self) 
     {
-        todo!();
+        if self.is_bot
+        {
+            //TODO, fix
+            return;
+        }
+        else 
+        {
+            loop 
+            {
+                //Make a hashmap and count the loops.
+                let mut c_hashmap : HashMap<i32, RedCard> = HashMap::new();
+                let mut i = 0;
+                //Print out each card in hand
+                for c in self.hand.iter_mut()
+                {
+                    println!("{}: {}\n -{}", i.to_string().yellow(), c.get_title().red().bold(), c.get_desc().red());
+                    //Add the cards to the hashmap
+                    c_hashmap.insert(i, c.clone());
+                    i+=1;
+                }
+
+                //Ask for which cards to discard.
+                let mut input = String::new();
+
+                println!("Enter the cards you wish to discard (leave empty to skip):");
+                match io::stdin().read_line(&mut input) 
+                {
+                    Ok(_) => 
+                    {
+                        // Successfully read input
+                        if input.trim().is_empty() 
+                        {
+                            break;
+                        } 
+                        else 
+                        {
+                            let numbers: Vec<i32> = input.split_whitespace().map(|s| s.parse::<i32>().unwrap()).collect();
+
+                            let mut new_hand: Vec<RedCard> = Vec::new();
+
+                            //Get the discarded card index in the hashmap and remove them
+                            for n in numbers
+                            {
+                                match c_hashmap.get(&n)
+                                {
+                                    Some(c) => 
+                                    {
+                                        println!("Discarded: {}", c.get_title().red());
+                                        c_hashmap.remove(&n);
+                                    }
+                                    None => 
+                                    {
+                                        println!("Found no card of index {}", n)
+                                    }
+                                }
+                            }
+
+                            //Push the non-removed cards to new_hand.
+                            for c in c_hashmap
+                            {
+                                new_hand.push(c.1);
+                            }
+
+                            //replace the old hand.
+                            self.hand = new_hand;
+                            break;
+                            //fill hand handled in game.     
+                        };
+                    },
+                    Err(error) => 
+                    {
+                        // Error reading input
+                        eprintln!("Error reading input: {}", error.to_string());
+                    }
+                }
+            }
+        }
     }
 }
 

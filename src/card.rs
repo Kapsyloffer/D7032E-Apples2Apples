@@ -16,7 +16,7 @@ pub struct GreenCard
 pub struct RedCard
 {
     pub title: String,
-    pub desc : String
+    pub desc : String,
 }
 
 #[allow(dead_code)]

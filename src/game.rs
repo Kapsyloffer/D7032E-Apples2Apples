@@ -102,6 +102,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             for p in p_list.iter_mut()
             {
                 p.prompt_discard();
+                refill_hand(p, r_deck);
             }
         }
 
@@ -243,7 +244,7 @@ pub fn check_winner(p_list : &Vec<Player>) -> bool
 {
     let limit : u8;
 
-    match p_list.len()
+    match p_list.len() //TODO: Custom
     {
         4=>limit = 8,
         5=>limit = 7,
