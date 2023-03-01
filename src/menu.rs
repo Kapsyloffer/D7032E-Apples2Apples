@@ -1,9 +1,7 @@
 use std::*;
-use std::net::*;
-use crate::networking::*;
 use crate::game::*;
 use crate::settings::{default_settings, custom_settings};
-
+use crate::networking::*;
 extern crate colorize;
 use colorize::*;
 
@@ -15,8 +13,9 @@ pub fn menu_main()
     {
         print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
         println!("Apples To Apples:");
-        println!("{}. Join Lobby (WIP)", "[1]".to_string().bold().yellow());
-        println!("{}. Create Lobby", "[2]".to_string().bold().yellow());
+        println!("{}. OFFLINE", "[1]".to_string().bold().yellow());
+        println!("{}. JOIN ONLINE", "[2]".to_string().bold().yellow());
+        println!("{}. HOST ONLINE", "[3]".to_string().bold().yellow());
         println!("{}. Exit", "[0]".to_string().bold().yellow());
 
         let mut input = String::new();
@@ -25,15 +24,17 @@ pub fn menu_main()
 
         match input.trim() 
         {
-            "1" => loop 
+            "1" => 
+            {
+                let _ = offline_lobby();
+            },
+            "2" => 
             {
                 let _ = join_lobby();
-                break;
             },
-            "2" => loop
+            "3" => 
             {
                 let _ = host_lobby();
-                break;
             },
             "0" => 
             {
@@ -46,29 +47,24 @@ pub fn menu_main()
     }
 }
 
-fn join_lobby()-> std::io::Result<()>
+//Create a networking client
+fn join_lobby()-> io::Result<()>
 {
-    loop 
-    {
-        print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-        println!("0. <-- Go back");
-        println!("---Join lobby---");
-        print!("Please enter an IP:  ");
-        match "127.0.0.1".parse::<Ipv4Addr>()
-        {
-            Ok(ip4) =>
-            {
-                let _c =  client_factory(ip4, 42069);
-            },
-            Err(e) =>
-            {
-                println!("Error message: {}", e.to_string());
-            }
-        }
-    }
+    let mut client = Client::connect()?;
+    client.play()?;
+    Ok(())
 }
 
-fn host_lobby()
+//Create a networking server
+fn host_lobby() -> io::Result<()>
+{
+    let mut server = Server::new()?;
+    server.run()?;
+    server.start_game()?;
+    Ok(())
+}
+
+fn offline_lobby()
 {
     //settings
     let mut j : bool = true;
