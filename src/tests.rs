@@ -146,7 +146,34 @@ fn pick_a_judge_at_random_req5()  //Req 5
 #[test]
 fn allow_players_to_discard_their_hands_before_phase_a() //Idk which requirement this is.
 {
-    assert_eq!(0, 1);
+    //Dummy bot som ska discarda
+    let mut dummy_player = player_factory(0, true, true);
+
+    //Skapa red deck
+    let mut red_deck = RedDeck {cards: Vec::new()};
+
+    //Skapa Discard
+    let mut discard_deck = Discard{cards: Vec::new()};
+
+    //Läs in alla kort
+    red_deck.read_cards();
+
+    //Checka att korten laddar in ordentligt.
+    assert!(red_deck.cards.len() > 1);
+
+    //Ge player 7 kort.
+    refill_hand(&mut dummy_player, &mut red_deck);
+
+    //Checka om han fick 7 kort.
+    assert_eq!(dummy_player.get_hand_size(), 7);
+
+    //Prompt discard
+    dummy_player.prompt_discard(&mut discard_deck);
+
+    //Compara om han discarade properly
+    assert!(discard_deck.cards.len() > 0);
+
+    //Om allt funkar properly så passar testen.
 }
 
 #[test]
@@ -169,7 +196,7 @@ fn green_apple_drawn_and_shown_to_everyone_req6()  //Req 6
     //It changed
     assert_ne!(dummy1.desc, dummy2.desc);
     //And then we print it in Game.rs which makes this test kinda
-    //Incomplete but still. :P
+    //Incomplete/useless but still. :P
 }
 
 #[test]

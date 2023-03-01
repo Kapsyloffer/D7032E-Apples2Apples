@@ -11,9 +11,9 @@ use colorize::*;
 
 //TODO: Future modifications
 /*
-- A phase before A that lets people discard cards from their hands.
+- A phase before A that lets people discard cards from their hands. --DONE
 - Gamemode, either Judge or Vote. --DONE
-- Wild red apples.
+- Wild red apples. --TODO: Rewrite redDeck and make prompt for wild red apple
  */
 
 //Some simple setup.
@@ -101,7 +101,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         {
             for p in p_list.iter_mut()
             {
-                p.prompt_discard();
+                p.prompt_discard(d_deck);
                 refill_hand(p, r_deck);
             }
         }

@@ -1,10 +1,12 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
 use crate::card::*;
+use crate::cardpiles::Discard;
 use std::collections::HashMap;
 use std::net::TcpStream;
 use std::io::*;
 use rand::Rng;
+use rand::rngs::ThreadRng;
 use std::io;
 
 extern crate colorize;
@@ -29,7 +31,7 @@ pub trait PlayerActions
     fn get_id(&self) -> i32;
     fn give_green(&mut self, g : GreenCard);
     fn vote(&self, cards : &mut Vec<(i32, RedCard)>) -> i32; //returns the selected ID
-    fn prompt_discard(&mut self);
+    fn prompt_discard(&mut self, d : &mut Discard);
 }
 pub trait Judge
 {
@@ -201,12 +203,13 @@ impl PlayerActions for Player
         }
     }
 
-    fn prompt_discard(&mut self) 
+    fn prompt_discard(&mut self, discard_deck : &mut Discard) 
     {
         if self.is_bot
         {
-            //TODO, fix
-            return;
+            //The AI is not too complicated, choose a random amount of cards and discard em.
+            let r_index = rand::thread_rng().gen_range(0..self.get_hand_size());
+            discard_deck.add_to_discard(self.hand.remove(r_index as usize));
         }
         else 
         {
@@ -251,7 +254,8 @@ impl PlayerActions for Player
                                     Some(c) => 
                                     {
                                         println!("Discarded: {}", c.get_title().red());
-                                        c_hashmap.remove(&n);
+                                        //Skicka kortet straight to discard.
+                                        discard_deck.add_to_discard(c_hashmap.remove(&n).unwrap());
                                     }
                                     None => 
                                     {
