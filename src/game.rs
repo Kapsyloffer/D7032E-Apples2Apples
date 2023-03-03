@@ -49,7 +49,6 @@ pub fn init_game(settings : Settings)
 //Main gameplayloop happens here.
 fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discard, p_list : &mut Vec<Player>, settings: Settings)
 {
-    
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
     //Req 1. Read all of the green apples
     //Req 2. Read all of the red apples 
@@ -150,7 +149,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             //Have everyone vote
             for p in p_list.iter_mut()
             {
-                vote_counter.push(p.vote(&mut red_cards));
+                vote_counter.push(p.vote(&mut red_cards, &cur_green));
             }
             winner = count_votes(&p_list, &mut vote_counter);
         }
@@ -166,7 +165,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         red_cards = send_to_discard(red_cards, d_deck);
 
         //Req 14? check if winner, else continue
-        if check_winner(&p_list)
+        if check_winner(&p_list, &settings)
         {
             println!("\n====== {}{} ======", &winner.to_string().green().bold(), " IS THE WINNER!!".bold().green());
             break;
@@ -240,22 +239,30 @@ pub fn next_judge<'a>(p_list: &'a Vec<Player>, cur_judge: &'a Player) -> &'a Pla
 }
 
 //Check winner requirement at the end of each game.
-pub fn check_winner(p_list : &Vec<Player>) -> bool
+pub fn check_winner(p_list : &Vec<Player>, settings: &Settings) -> bool
 {
-    let limit : u8;
-
-    match p_list.len() //TODO: Custom
+    let mut limit : Option<i32> = None;
+    let playersize: i32 = p_list.len() as i32;
+    for s in settings.get_winreq()
     {
-        4=>limit = 8,
-        5=>limit = 7,
-        6=>limit = 6,
-        7=>limit = 5,
-        l if l >= 8 => limit = 4, //8+ players
-        _=> panic!("Less than 4 players wtf") // <4 players
+        if playersize == s.0 && playersize < 8
+        {
+            limit = Some(s.1);
+            break;
+        }
+        else if playersize >= 8 && s.0 >= 8
+        {
+            limit = Some(s.1);
+            break;
+        }
+    }
+    if limit.is_none()
+    {
+        panic!("Limit broke");
     }
     for p in p_list
     {
-        if p.get_green_amount() >= limit
+        if p.get_green_amount() >= limit.unwrap() as u8
         {
             return true;
         }
