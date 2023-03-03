@@ -2,7 +2,9 @@
 use crate::game::*;
 use crate::player::*;
 use crate::card::*;
-use crate::cardpiles::*;    
+use crate::cardpiles::*;
+use crate::settings::custom_settings;
+use crate::settings::default_settings;    
 use rand::Rng;
 use core::hash::*;
 use std::hash::Hash;
@@ -488,7 +490,7 @@ fn check_for_winner_4p_req14a()  //Req 14
     }
 
     //Check
-    assert_ne!(true, check_winner(&p_list));
+    assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
@@ -503,7 +505,7 @@ fn check_for_winner_4p_req14a()  //Req 14
     }
 
     //check
-    assert_eq!(true, check_winner(&p_list));
+    assert_eq!(true, check_winner(&p_list, &default_settings()));
 }
 
 #[test]
@@ -518,7 +520,7 @@ fn check_for_winner_5p_req14a()
     }
 
     //Check
-    assert_ne!(true, check_winner(&p_list));
+    assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
@@ -533,7 +535,7 @@ fn check_for_winner_5p_req14a()
     }
 
     //check
-    assert_eq!(true, check_winner(&p_list));
+    assert_eq!(true, check_winner(&p_list, &default_settings()));
 }
 
 #[test]
@@ -548,7 +550,7 @@ fn check_for_winner_6p_req14a()
     }
 
     //Check
-    assert_ne!(true, check_winner(&p_list));
+    assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
@@ -563,7 +565,7 @@ fn check_for_winner_6p_req14a()
     }
 
     //check
-    assert_eq!(true, check_winner(&p_list));
+    assert_eq!(true, check_winner(&p_list, &default_settings()));
 }
 
 #[test]
@@ -578,7 +580,7 @@ fn check_for_winner_7p_req14a()
     }
 
     //Check
-    assert_ne!(true, check_winner(&p_list));
+    assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
@@ -593,7 +595,7 @@ fn check_for_winner_7p_req14a()
     }
 
     //check
-    assert_eq!(true, check_winner(&p_list));
+    assert_eq!(true, check_winner(&p_list, &default_settings()));
 }
 
 #[test]
@@ -608,7 +610,7 @@ fn check_for_winner_8p_req14a()
     }
 
     //Check
-    assert_ne!(true, check_winner(&p_list));
+    assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
@@ -623,7 +625,7 @@ fn check_for_winner_8p_req14a()
     }
 
     //check
-    assert_eq!(true, check_winner(&p_list));
+    assert_eq!(true, check_winner(&p_list, &default_settings()));
 }
 
 #[test]
@@ -638,7 +640,7 @@ fn check_for_winner_8plus_req14a()
     }
 
     //Check
-    assert_ne!(true, check_winner(&p_list));
+    assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
     let mut g_deck = GreenDeck{cards:Vec::new()};
@@ -646,18 +648,52 @@ fn check_for_winner_8plus_req14a()
     g_deck = g_deck.shuffle();
     
     //give a player 4 green
-    for _ in 0..8
+    for _ in 0..4
     {
         println!("{}\n", &g_deck.cards[0].title);
         p_list[0].give_green(g_deck.cards.remove(0));
     }
 
     //check
-    assert_eq!(true, check_winner(&p_list));
+    assert_eq!(true, check_winner(&p_list, &default_settings()));
 }
 
 #[test]
 fn check_for_winner_custom_req14b()
 {
-    assert_eq!(1, 0);
+    let mut p_list : Vec<Player> = Vec::new();
+    let settings = custom_settings(true, false, 0, 0, [(4, 10)].to_vec());
+    //Generate 4 players
+    for i in 0..4
+    {
+        p_list.push(player_factory(i, true, true));
+    }
+
+    //Check
+    assert_ne!(true, check_winner(&p_list, &default_settings()));
+
+    //Create a dummy green deck
+    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let _ = g_deck.read_cards();
+    g_deck = g_deck.shuffle();
+    
+    //give a player 5 green
+    for _ in 0..5
+    {
+        println!("{}\n", &g_deck.cards[0].title);
+        p_list[0].give_green(g_deck.cards.remove(0));
+    }
+
+    //check
+    assert!(check_winner(&p_list, &default_settings()) == false);
+
+     //give a player 5 more green
+     for _ in 0..5
+     {
+         println!("{}\n", &g_deck.cards[0].title);
+         p_list[0].give_green(g_deck.cards.remove(0));
+     }
+     
+     //check
+     assert!(check_winner(&p_list, &default_settings()) == true);
 }

@@ -29,16 +29,21 @@ impl Settings
     {
         return self.bots;
     }
+
+    pub fn get_winreq (&self) -> &Vec<(i32, i32)>
+    {
+        return &self.winreq;
+    }
 }
 
-pub fn custom_settings(j: bool, d: bool, w: i32, b: u8) -> Settings
+pub fn custom_settings(j: bool, d: bool, w: i32, b: u8, wr : Vec<(i32, i32)>) -> Settings
 {
     return Settings
     {
         judge: j,
         discard: d,
         wild_apples: w,
-        winreq: Vec::new(),
+        winreq: wr,
         bots: b,
     };
 }
@@ -50,7 +55,7 @@ pub fn default_settings() -> Settings
         judge: true,
         discard: false,
         wild_apples: 0,
-        winreq: Vec::new(),
+        winreq: [(4, 8), (5, 7), (6, 6), (7, 5), (8, 4)].to_vec(),
         bots: 5,
     };
 }

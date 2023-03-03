@@ -30,7 +30,7 @@ pub trait PlayerActions
     fn get_hand_size(&self) -> u8;
     fn get_id(&self) -> i32;
     fn give_green(&mut self, g : GreenCard);
-    fn vote(&self, cards : &mut Vec<(i32, RedCard)>) -> i32; //returns the selected ID
+    fn vote(&self, cards : &mut Vec<(i32, RedCard)>, cur_green : &GreenCard) -> i32; //returns the selected ID
     fn prompt_discard(&mut self, d : &mut Discard);
 }
 pub trait Judge
@@ -123,6 +123,7 @@ impl PlayerActions for Player
         else
         {
             let mut i = 0;
+            println!("\n=== {} ===", "YOUR HAND".yellow().bold());
             //Print out each card in hand
             for c in self.hand.iter_mut()
             {
@@ -155,11 +156,18 @@ impl PlayerActions for Player
         //ask for input,
     }
 
-    fn vote(&self, cards : &mut Vec<(i32, RedCard)>) -> i32 //TODO: TEST
+    fn vote(&self, cards : &mut Vec<(i32, RedCard)>, cur_green : &GreenCard) -> i32 //TODO: TEST
     {
         let mut competitors : Vec<i32> = Vec::new();
         let c_size = &cards.len();
-        
+
+        if !self.is_bot 
+        {
+        //CLEAR SCREEN
+        print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
+        //Print current green card, makes voting easier.
+        println!("\n{}\n{}\n", &cur_green.get_title().green().bold(), &cur_green.get_desc().green());        
+        }
         //print out each card not played by the player (random ofc)
         for c in cards
         {
@@ -167,7 +175,7 @@ impl PlayerActions for Player
             {
                 if !self.is_bot
                 {
-                    println!("{}:\n{}\n {}", competitors.len().to_string(), c.1.get_title(), c.1.get_desc());
+                    println!("{}: {}\n{}", competitors.len().to_string().yellow(), c.1.get_title().red().bold(), c.1.get_desc().red());
                 }
                 competitors.push(c.0); //push ID to a vector, so if we pick 
                 //card 0 it sends the id of card 0 instead
@@ -182,6 +190,7 @@ impl PlayerActions for Player
         {
             loop 
             {
+                println!("\n==== {} ====", "VOTING PHASE".cyan().bold());
                 println!("Vote for the best card:");
                 let mut input = String::new();
                 io::stdin().read_line(&mut input).expect("Failed to read line");
@@ -213,6 +222,9 @@ impl PlayerActions for Player
         }
         else 
         {
+            //CLEAR SCREEN
+            //print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
+    
             loop 
             {
                 //Make a hashmap and count the loops.
@@ -229,7 +241,8 @@ impl PlayerActions for Player
 
                 //Ask for which cards to discard.
                 let mut input = String::new();
-
+                
+                println!("==== {} ====", "DISCARD PHASE".cyan().bold());
                 println!("Enter the cards you wish to discard (leave empty to skip):");
                 match io::stdin().read_line(&mut input) 
                 {

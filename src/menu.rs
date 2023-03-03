@@ -1,3 +1,4 @@
+#![allow(unused)]
 use std::*;
 use crate::game::*;
 use crate::settings::{default_settings, custom_settings};
@@ -14,8 +15,8 @@ pub fn menu_main()
         print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
         println!("Apples To Apples:");
         println!("{}. OFFLINE", "[1]".to_string().bold().yellow());
-        println!("{}. JOIN ONLINE", "[2]".to_string().bold().yellow());
-        println!("{}. HOST ONLINE", "[3]".to_string().bold().yellow());
+        println!("{}. JOIN ONLINE (WIP)", "[2]".to_string().bold().yellow());
+        println!("{}. HOST ONLINE (WIP)", "[3]".to_string().bold().yellow());
         println!("{}. Exit", "[0]".to_string().bold().yellow());
 
         let mut input = String::new();
@@ -71,6 +72,7 @@ fn offline_lobby()
     let mut d : bool = false;
     let mut w : i32 = 0;
     let mut b : u8 = 5;
+    let mut wr : Vec<(i32, i32)> = [(4, 8), (5, 7), (6, 6), (7, 5), (8, 4)].to_vec();
     let mut modified = false;
     //println!("Lobby hosted at: [PORT]");
     loop 
@@ -160,7 +162,7 @@ fn offline_lobby()
                 }
                 else 
                 {
-                    init_game(custom_settings(j, d, w, b));
+                    init_game(custom_settings(j, d, w, b, wr));
                 }
                 break;
             }
