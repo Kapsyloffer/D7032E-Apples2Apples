@@ -1,11 +1,12 @@
 #![allow(unused)]
 pub struct Settings
 {
-    pub (self) judge : bool,
-    pub (self) discard: bool,
-    pub (self) wild_apples: i32,
-    pub (self) winreq: Vec<(i32, i32)>,
-    pub (self) bots : u8,
+    judge : bool,
+    discard: bool,
+    wild_apples: i32,
+    winreq: Vec<(i32, i32)>,
+    bots : u8,
+    handsize : u8,
 }
 
 impl Settings
@@ -34,6 +35,11 @@ impl Settings
     {
         return &self.winreq;
     }
+
+    pub fn get_max_hand_size (&self) -> u8
+    {
+        return self.handsize;
+    }
 }
 
 pub fn custom_settings(j: bool, d: bool, w: i32, b: u8, wr : Vec<(i32, i32)>) -> Settings
@@ -45,6 +51,7 @@ pub fn custom_settings(j: bool, d: bool, w: i32, b: u8, wr : Vec<(i32, i32)>) ->
         wild_apples: w,
         winreq: wr,
         bots: b,
+        handsize: 7,
     };
 }
 
@@ -57,5 +64,6 @@ pub fn default_settings() -> Settings
         wild_apples: 0,
         winreq: [(4, 8), (5, 7), (6, 6), (7, 5), (8, 4)].to_vec(),
         bots: 5,
+        handsize: 7,
     };
 }

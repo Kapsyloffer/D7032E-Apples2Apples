@@ -17,8 +17,8 @@ pub struct Player //I guess all networking handlas av Client
 {
     player_id : i32,
     is_bot : bool,
-    online : bool,
-    pub hand : Vec<RedCard>, //debugging, remove pub later
+    //online : bool,
+    hand : Vec<RedCard>, 
     green_apples : Vec<GreenCard>,
 }
 
@@ -301,14 +301,14 @@ impl PlayerActions for Player
 }
 
 //probably the easiest way to create a new player
-pub fn player_factory (id : i32, bot : bool, o: bool) -> Player 
+pub fn player_factory (id : i32, bot : bool, _o: bool) -> Player 
 {
     let p : Player = Player
     {
         player_id : id,
         is_bot : bot,
         //tbh I have no idea of why online is a thing, but it was in the og code so I'll let it be.
-        online : o,
+        //online : o,
         hand : Vec::new(),
         green_apples : Vec::new(),
     };

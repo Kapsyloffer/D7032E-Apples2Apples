@@ -15,12 +15,12 @@ use std::hash::Hash;
 fn read_all_green_apples_req1() //Req 1
 {
     //Create a new deck
-    let mut _gc : GreenDeck = GreenDeck {cards : Vec::new()};
+    let mut gc : GreenDeck = GreenDeck {cards : Vec::new()};
 
     //Get the length before and after filling the deck.
-    let b4 = _gc.cards.len();
-    let _ = _gc.read_cards();
-    let after = _gc.cards.len();
+    let b4 = gc.get_size();
+    gc.read_cards();
+    let after = gc.get_size();
 
     //Check if it got bigger.
     assert!(b4 < after);
@@ -29,12 +29,12 @@ fn read_all_green_apples_req1() //Req 1
 fn read_all_red_apples_req2()  //Req 2
 {
     //Create a new deck
-    let mut _rc : RedDeck = RedDeck {cards : Vec::new()};
+    let mut rc : RedDeck = RedDeck {cards : Vec::new()};
 
     //Get the length before and after filling the deck.
-    let b4  = _rc.cards.len();
-    let _ = _rc.read_cards();
-    let after = _rc.cards.len();
+    let b4  = rc.get_size();
+    rc.read_cards();
+    let after = rc.get_size();
 
     //Check if it got bigger.
     assert!(b4 < after);
@@ -51,20 +51,20 @@ fn shuffle_both_decks_req3()  //Req 3
     let _ = gd.read_cards();
 
     //Save state before shuffle
-    let b4shuffle_r : Vec<RedCard> = rd.cards.clone();
-    let b4shuffle_g : Vec<GreenCard> = gd.cards.clone();
+    let b4shuffle_r : Vec<RedCard> = rd.get_deck();
+    let b4shuffle_g : Vec<GreenCard> = gd.get_deck();
 
     //Check if they are the same
-    assert_eq!(hash_value(&b4shuffle_r), hash_value(&rd.cards));
-    assert_eq!(hash_value(&b4shuffle_g), hash_value(&gd.cards));
+    assert_eq!(hash_value(&b4shuffle_r), hash_value(&rd.get_deck()));
+    assert_eq!(hash_value(&b4shuffle_g), hash_value(&gd.get_deck()));
 
     //Shuffle both decks
     rd = rd.shuffle();
     gd = gd.shuffle();
 
     //Check if they are different.
-    assert_ne!(hash_value(&b4shuffle_r), hash_value(&rd.cards));
-    assert_ne!(hash_value(&b4shuffle_g), hash_value(&gd.cards));
+    assert_ne!(hash_value(&b4shuffle_r), hash_value(&rd.get_deck()));
+    assert_ne!(hash_value(&b4shuffle_g), hash_value(&gd.get_deck()));
 }
 
 //used for hashging vectors and comparing if they got shuffled.
@@ -99,7 +99,7 @@ fn deal7_red_apples_to_each_player_req4()  //Req 4
     //Refill the hand of each player.
     for p in 0..p_list.len()
     {
-        refill_hand(&mut p_list[p], &mut dummy_deck);
+        refill_hand(&mut p_list[p], &mut dummy_deck, &default_settings());
     }
 
     for p in 0..p_list.len()
@@ -155,16 +155,16 @@ fn allow_players_to_discard_their_hands_before_phase_a() //Idk which requirement
     let mut red_deck = RedDeck {cards: Vec::new()};
 
     //Skapa Discard
-    let mut discard_deck = Discard{cards: Vec::new()};
+    let mut discard_deck = discard_factory();
 
     //Läs in alla kort
     red_deck.read_cards();
 
     //Checka att korten laddar in ordentligt.
-    assert!(red_deck.cards.len() > 1);
+    assert!(red_deck.get_size() > 1);
 
     //Ge player 7 kort.
-    refill_hand(&mut dummy_player, &mut red_deck);
+    refill_hand(&mut dummy_player, &mut red_deck, &default_settings());
 
     //Checka om han fick 7 kort.
     assert_eq!(dummy_player.get_hand_size(), 7);
@@ -173,7 +173,7 @@ fn allow_players_to_discard_their_hands_before_phase_a() //Idk which requirement
     dummy_player.prompt_discard(&mut discard_deck);
 
     //Compara om han discarade properly
-    assert!(discard_deck.cards.len() > 0);
+    assert!(discard_deck.get_size() > 0);
 
     //Om allt funkar properly så passar testen.
 }
@@ -368,7 +368,7 @@ fn all_red_apples_go_to_discard_req11()  //Req 11
 {
     let mut p_list : Vec<Player> = Vec::new();
     let mut red_cards : Vec<(i32, RedCard)> = Vec::new();
-    let mut discard : Discard = Discard{cards:Vec::new()};
+    let mut discard : Discard = discard_factory();
 
     //create 5 bots
     for i in 0..5
@@ -433,7 +433,7 @@ fn all_players_draw_up_to_seven_req12()  //Req 12 (Literally just Req4 but we st
     //Refill the hand of each player.
     for p in 0..p_list.len()
     {
-        refill_hand(&mut p_list[p], &mut dummy_deck);
+        refill_hand(&mut p_list[p], &mut dummy_deck, &default_settings());
     }
 
     //Check if everyone has 7 cards.
@@ -500,8 +500,8 @@ fn check_for_winner_4p_req14a()  //Req 14
     //give a player 8 green
     for _ in 0..8
     {
-        println!("{}\n", &g_deck.cards[0].title);
-        p_list[0].give_green(g_deck.cards.remove(0));
+        println!("{}\n", &g_deck.get_title_of_top_card());
+        p_list[0].give_green(g_deck.draw());
     }
 
     //check
@@ -530,8 +530,8 @@ fn check_for_winner_5p_req14a()
     //give a player 7 green
     for _ in 0..7
     {
-        println!("{}\n", &g_deck.cards[0].title);
-        p_list[0].give_green(g_deck.cards.remove(0));
+        println!("{}\n", &g_deck.get_title_of_top_card());
+        p_list[0].give_green(g_deck.draw());
     }
 
     //check
@@ -560,8 +560,8 @@ fn check_for_winner_6p_req14a()
     //give a player 6 green
     for _ in 0..6
     {
-        println!("{}\n", &g_deck.cards[0].title);
-        p_list[0].give_green(g_deck.cards.remove(0));
+        println!("{}\n", &g_deck.get_title_of_top_card());
+        p_list[0].give_green(g_deck.draw());
     }
 
     //check
@@ -590,8 +590,8 @@ fn check_for_winner_7p_req14a()
     //give a player 5 green
     for _ in 0..5
     {
-        println!("{}\n", &g_deck.cards[0].title);
-        p_list[0].give_green(g_deck.cards.remove(0));
+        println!("{}\n", &g_deck.get_title_of_top_card());
+        p_list[0].give_green(g_deck.draw());
     }
 
     //check
@@ -620,8 +620,8 @@ fn check_for_winner_8p_req14a()
     //give a player 4 green
     for _ in 0..4
     {
-        println!("{}\n", &g_deck.cards[0].title);
-        p_list[0].give_green(g_deck.cards.remove(0));
+        println!("{}\n", &g_deck.get_title_of_top_card());
+        p_list[0].give_green(g_deck.draw());
     }
 
     //check
@@ -650,8 +650,8 @@ fn check_for_winner_8plus_req14a()
     //give a player 4 green
     for _ in 0..4
     {
-        println!("{}\n", &g_deck.cards[0].title);
-        p_list[0].give_green(g_deck.cards.remove(0));
+        println!("{}\n", &g_deck.get_title_of_top_card());
+        p_list[0].give_green(g_deck.draw());
     }
 
     //check
@@ -680,8 +680,8 @@ fn check_for_winner_custom_req14b()
     //give a player 5 green
     for _ in 0..5
     {
-        println!("{}\n", &g_deck.cards[0].title);
-        p_list[0].give_green(g_deck.cards.remove(0));
+        println!("{}\n", &g_deck.get_title_of_top_card());
+        p_list[0].give_green(g_deck.draw());
     }
 
     //check
@@ -690,10 +690,28 @@ fn check_for_winner_custom_req14b()
      //give a player 5 more green
      for _ in 0..5
      {
-         println!("{}\n", &g_deck.cards[0].title);
-         p_list[0].give_green(g_deck.cards.remove(0));
+         println!("{}\n", &g_deck.get_title_of_top_card());
+         p_list[0].give_green(g_deck.draw());
      }
      
      //check
      assert!(check_winner(&p_list, &default_settings()) == true);
+}
+
+#[test]
+fn test_if_deck_factories_works()
+{
+    let g_deck : GreenDeck = green_deck_factory();
+    let r_deck : RedDeck = red_deck_factory();
+    assert!(g_deck.get_size() > 1);
+    assert!(r_deck.get_size() > 1);
+
+    let mut dummy_g = GreenDeck{cards: Vec::new()};
+    let mut dummy_r = RedDeck{cards: Vec::new()};
+
+    _ = dummy_g.read_cards();
+    _ = dummy_r.read_cards();
+
+    assert_eq!(g_deck.get_size(), dummy_g.get_size());
+    assert_eq!(r_deck.get_size(), dummy_r.get_size());
 }

@@ -11,17 +11,17 @@ pub trait Setup
 #[derive(Clone)]
 pub struct RedDeck
 {
-    pub cards : Vec<RedCard>
+    pub (crate) cards : Vec<RedCard>
 }
 
 pub struct GreenDeck
 {
-    pub cards : Vec<GreenCard>
+    pub (crate) cards : Vec<GreenCard>
 }
 
 pub struct Discard
 {
-    pub cards : Vec<RedCard>
+    cards : Vec<RedCard>
 }
 
 impl Setup for GreenDeck
@@ -103,11 +103,7 @@ impl Setup for RedDeck
 
 impl RedDeck
 {
-    pub fn get_top_card_title(&self, index : usize) -> String
-    {
-        return self.cards[index].get_title().to_string();
-    }
-    pub fn draw (&mut self) -> RedCard
+   pub fn draw (&mut self) -> RedCard
     {
         //self.shuffle(); //fixes the non-random draw issue, HOWEVER IT BREAKS MY TESTS REEEE
         let card = self.cards.remove(0);
@@ -139,10 +135,26 @@ impl RedDeck
     {
         self.cards.push(rc);
     }
+
+    pub fn get_size(&self) -> usize
+    {
+        return self.cards.len();
+    }
+
+    //USED FOR TESTING
+    pub fn get_deck(&self) -> Vec<RedCard>
+    {
+        return self.cards.clone();
+    }
 }
 
 impl GreenDeck
 {
+    pub fn get_title_of_top_card(&self) -> String
+    {
+        return self.cards[0].get_title();
+    }
+
     pub fn shuffle (&mut self) -> GreenDeck
     {
         //Fisher Yates shuffle algorithm
@@ -168,6 +180,17 @@ impl GreenDeck
     {
         return self.cards.remove(0);
     }
+
+    pub fn get_size(&self) -> usize
+    {
+        return self.cards.len();
+    }
+
+    //USED FOR TESTING
+    pub fn get_deck(&self) -> Vec<GreenCard>
+    {
+        return self.cards.clone();
+    }
 }
 
 impl Discard
@@ -181,4 +204,31 @@ impl Discard
     {
         return self.cards.len();
     }
+}
+
+//Create a new GreenDeck
+pub fn green_deck_factory() -> GreenDeck
+{
+    let mut g_deck = GreenDeck { cards: Vec::new() };
+    //Req 1. Read all of the green apples
+    _ = g_deck.read_cards();
+    //Req 3. Shuffle both of the decks
+    g_deck.shuffle();
+    return g_deck;
+}
+
+//Create a new RedDeck
+pub fn red_deck_factory() -> RedDeck
+{
+    let mut g_deck = RedDeck { cards: Vec::new() };
+    //Req 2. Read all of the red apples 
+    _ = g_deck.read_cards();
+    //Req 3. Shuffle both of the decks
+    g_deck.shuffle();
+    return g_deck;
+}
+
+pub fn discard_factory() -> Discard
+{
+    return Discard { cards: Vec::new() };
 }

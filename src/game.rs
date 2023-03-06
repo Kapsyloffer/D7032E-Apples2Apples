@@ -22,9 +22,9 @@ pub fn init_game(settings : Settings)
     //TODO:: HOST?
 
     //Create all the decks
-    let mut r_deck = RedDeck{cards: Vec::new()};
-    let mut g_deck = GreenDeck{cards: Vec::new()};
-    let mut d_deck = Discard{cards: Vec::new()};
+    let mut r_deck = red_deck_factory();
+    let mut g_deck = green_deck_factory();
+    let mut d_deck = discard_factory();
     
     //Add Players
     let mut p_list : Vec<Player> = Vec::new();
@@ -50,8 +50,6 @@ pub fn init_game(settings : Settings)
 fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discard, p_list : &mut Vec<Player>, settings: Settings)
 {
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-    //Req 1. Read all of the green apples
-    //Req 2. Read all of the red apples 
     _ = g_deck.read_cards();
     _ = r_deck.read_cards();
 
@@ -61,7 +59,6 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         todo!()
     }
 
-    //Req 3. Shuffle both of the decks
     *r_deck = r_deck.shuffle();
     *g_deck = g_deck.shuffle();
 
@@ -74,7 +71,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
     //Req 4. deal 7 cards to each player
     for p in p_list.iter_mut()
     {
-        refill_hand(p, r_deck);
+        refill_hand(p, r_deck, &settings);
     }
 
     //Req 5. pick judge
@@ -101,7 +98,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
             for p in p_list.iter_mut()
             {
                 p.prompt_discard(d_deck);
-                refill_hand(p, r_deck);
+                refill_hand(p, r_deck, &settings);
             }
         }
 
@@ -183,7 +180,7 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
         //Req 12. All players draw 7-n cards where n is their handsize
         for p in p_list.iter_mut()
         {
-            refill_hand(p, r_deck);
+            refill_hand(p, r_deck, &settings);
         }
 
         if settings.use_judge()
@@ -195,9 +192,9 @@ fn gameplay(r_deck : &mut RedDeck, g_deck : &mut GreenDeck, d_deck : &mut Discar
 }
 
 //Have all players draw up to 7 from anywhere.
-pub fn refill_hand(p : &mut Player, red_deck : &mut RedDeck)
+pub fn refill_hand(p : &mut Player, red_deck : &mut RedDeck, s : &Settings)
 {
-    while p.get_hand_size() < 7
+    while p.get_hand_size() < s.get_max_hand_size()
     {
         p.add_to_hand(red_deck.draw());
     }
@@ -241,8 +238,13 @@ pub fn next_judge<'a>(p_list: &'a Vec<Player>, cur_judge: &'a Player) -> &'a Pla
 //Check winner requirement at the end of each game.
 pub fn check_winner(p_list : &Vec<Player>, settings: &Settings) -> bool
 {
+    //Score limit to win
     let mut limit : Option<i32> = None;
+    //Size of players
     let playersize: i32 = p_list.len() as i32;
+
+    //s is a Vec<(i32, i32)>. Where s.0 is the playercount, and s.1 is the score needed to win.
+    //hence this function.
     for s in settings.get_winreq()
     {
         if playersize == s.0 && playersize < 8
@@ -258,15 +260,18 @@ pub fn check_winner(p_list : &Vec<Player>, settings: &Settings) -> bool
     }
     if limit.is_none()
     {
-        panic!("Limit broke");
+        panic!("Limit broke"); //This breaks if settings break.
     }
+    //Compare if there are any winners.
     for p in p_list
     {
         if p.get_green_amount() >= limit.unwrap() as u8
         {
+            //If we get a winner, return true and the game is over.
             return true;
         }
     }
+    //Else we return false as there are no winners.
     return false;
 }
 
@@ -277,6 +282,7 @@ pub fn send_to_discard(rc: Vec<(i32, RedCard)>, d : &mut Discard) -> Vec<(i32, R
     {
         d.add_to_discard(c);
     }
+    //Return an empty vector.
     return Vec::new(); //Ful lösning but eh
 }
 
