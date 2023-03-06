@@ -6,7 +6,7 @@ pub trait CardTraits
 
 pub trait WildApple
 {
-    fn set_title(&mut self) -> RedCard;
+    fn set_title(&mut self, new_title : String);
 }
 #[derive(Clone)]
 #[derive(Hash)]
@@ -60,9 +60,10 @@ impl RedCard
 
 impl WildApple for RedCard
 {
-    fn set_title(&mut self) -> RedCard 
+    fn set_title(&mut self, new_title : String)
     {
-       todo!()
+        self.title = new_title;
+        self.desc = String::new();
     }
 }
 

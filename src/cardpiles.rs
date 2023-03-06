@@ -214,20 +214,18 @@ pub fn green_deck_factory() -> GreenDeck
     let mut g_deck = GreenDeck { cards: Vec::new() };
     //Req 1. Read all of the green apples
     _ = g_deck.read_cards();
-    //Req 3. Shuffle both of the decks
-    g_deck.shuffle();
-    return g_deck;
+    //Req 3. Shuffle both of the decks 
+    return g_deck.shuffle();
 }
 
 //Create a new RedDeck
 pub fn red_deck_factory() -> RedDeck
 {
-    let mut g_deck = RedDeck { cards: Vec::new() };
+    let mut r_deck = RedDeck { cards: Vec::new() };
     //Req 2. Read all of the red apples 
-    _ = g_deck.read_cards();
+    _ = r_deck.read_cards();
     //Req 3. Shuffle both of the decks
-    g_deck.shuffle();
-    return g_deck;
+    return r_deck.shuffle();
 }
 
 pub fn discard_factory() -> Discard

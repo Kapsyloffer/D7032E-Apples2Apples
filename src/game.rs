@@ -16,6 +16,18 @@ pub fn init_game(settings : Settings)
     let mut r_deck = red_deck_factory();
     let mut g_deck = green_deck_factory();
     let mut d_deck = discard_factory();
+
+    //Add wild apples to the deck if we use them
+    if settings.wild_red_apples() > 0
+    {
+        //Add some to the red deck
+        for _ in 0..settings.wild_red_apples()
+        {
+            r_deck.add_to_deck(wild_red_factory());
+        }
+        //shuffle the red deck.
+        r_deck = r_deck.shuffle();
+    }
     
     //Add Players
     let mut p_list : Vec<Player> = Vec::new();
@@ -33,18 +45,6 @@ pub fn init_game(settings : Settings)
     for p in p_list.iter_mut()
     {
         refill_hand(p, &mut r_deck, &settings);
-    }
-
-    //Add wild apples to the deck if we use them
-    if settings.wild_red_apples() > 0
-    {
-        //Add some to the red deck
-        for _ in 0..settings.wild_red_apples()
-        {
-            r_deck.add_to_deck(wild_red_factory());
-        }
-        //shuffle the red deck.
-        r_deck.shuffle();
     }
 
     //gameplay

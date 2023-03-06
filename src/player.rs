@@ -32,6 +32,7 @@ pub trait PlayerActions
     fn give_green(&mut self, g : GreenCard);
     fn vote(&self, cards : &mut Vec<(i32, RedCard)>, cur_green : &GreenCard) -> i32; //returns the selected ID
     fn prompt_discard(&mut self, d : &mut Discard);
+    fn prompt_wild_apple(&self) -> String;
 }
 pub trait Judge
 {
@@ -141,6 +142,11 @@ impl PlayerActions for Player
                 {
                     Ok(num) if num < self.hand.len() => 
                     {
+                        if self.hand[num].is_wild()
+                        {//This is very coupled :/
+                            let wild_title = self.prompt_wild_apple();
+                            self.hand[num].set_title(wild_title);
+                        }
                         return self.hand.remove(num);
                     },
                     _ => 
@@ -295,6 +301,39 @@ impl PlayerActions for Player
                         eprintln!("Error reading input: {}", error.to_string());
                     }
                 }
+            }
+        }
+    }
+
+    fn prompt_wild_apple(&self) -> String
+    {
+        if self.is_bot
+        {
+            //I don't know how I wish to deal with the bots in this.
+            return "The funniest card ever".to_string();
+        }
+        else
+        {
+            loop 
+            {
+                println!("{}", "\n==WILD RED APPLE==\n".yellow().bold());
+                println!("=== {} ===", "Write something funny".cyan());
+                let mut input = String::new();
+                io::stdin().read_line(&mut input).expect("Failed to read line");
+
+                let _ = match input.trim().parse::<String>() 
+                {
+                    Ok(red) =>
+                    {
+                        println!("YOU WROTE: {}", red);
+                        return red;
+                    },
+                    _ => 
+                    {
+                        println!("Invalid input. Please try again.");
+                        continue;
+                    }
+                };
             }
         }
     }

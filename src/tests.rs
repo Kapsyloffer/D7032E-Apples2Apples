@@ -1,8 +1,10 @@
 #![allow(unused)]
 use crate::game_functions::*;
+use crate::player;
 use crate::player::*;
 use crate::card::*;
 use crate::cardpiles::*;
+use crate::settings;
 use crate::settings::custom_settings;
 use crate::settings::default_settings;    
 use rand::Rng;
@@ -710,4 +712,69 @@ fn test_if_deck_factories_works()
 
     assert_eq!(g_deck.get_size(), dummy_g.get_size());
     assert_eq!(r_deck.get_size(), dummy_r.get_size());
+}
+
+
+#[test]
+fn test_wild_red_apples()
+{
+    //Create a dummy card
+    let mut rc = wild_red_factory();
+
+    //Add a dummy player
+    let p = player_factory(0, true, false);
+
+    //get title beforehand
+    let b4 = wild_red_factory().get_title();
+
+    //Check that it is a wild apple
+    assert_eq!(rc.is_wild(), true);
+
+    //compare to normal apple
+    assert_ne!(redcard_factory(String::new(), String::new()).is_wild(), true);
+
+    //let the player play
+    rc.set_title(p.prompt_wild_apple());
+
+    //See if the title changed
+    assert_ne!(rc.get_title(), b4);
+}
+
+#[test]
+fn test_custom_title_red_apple()
+{
+    //Create a dummy card
+    let mut rc = wild_red_factory();
+
+    //Set the title to something
+    rc.set_title("Ayy lmao".to_string());
+
+    //See if it changed
+    assert_eq!("Ayy lmao".to_string(), rc.get_title());
+}
+
+#[test]
+fn do_wild_apples_get_added()
+{
+    //Create the deck
+    let mut r_deck = red_deck_factory();
+    let settings = custom_settings(true, true, 1000, 0, Vec::new());
+
+    //Check the size before we add the red apples.
+    let deck_size_before = r_deck.get_size();
+
+    //Add wild apples to the deck if we use them
+    if settings.wild_red_apples() > 0
+    {
+        //Add some to the red deck
+        for _ in 0..settings.wild_red_apples()
+        {
+            r_deck.add_to_deck(wild_red_factory());
+        }
+        //shuffle the red deck.
+        r_deck = r_deck.shuffle();
+    }
+
+    //Check it after we add the red apples.
+    assert!(r_deck.get_size() > deck_size_before);
 }
