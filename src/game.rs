@@ -7,15 +7,6 @@ use crate::game_functions::*;
 extern crate colorize;
 use colorize::*;
 
-
-
-//TODO: Future modifications
-/*
-- A phase before A that lets people discard cards from their hands. --DONE
-- Gamemode, either Judge or Vote. --DONE
-- Wild red apples. --TODO: Rewrite redDeck and make prompt for wild red apple 
- */
-
 //Some simple setup.
 pub fn init_game(settings : Settings)
 {
@@ -58,8 +49,6 @@ pub fn init_game(settings : Settings)
 
     //gameplay
     gameplay(&mut r_deck, &mut g_deck, &mut d_deck, &mut p_list, settings);
-
-    //And that's all she wrote.
 }
 
 //Main gameplayloop happens here.

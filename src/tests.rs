@@ -15,7 +15,7 @@ use std::hash::Hash;
 fn read_all_green_apples_req1() //Req 1
 {
     //Create a new deck
-    let mut gc : GreenDeck = GreenDeck {cards : Vec::new()};
+    let mut gc : GreenDeck = GreenDeck::empty();
 
     //Get the length before and after filling the deck.
     let b4 = gc.get_size();
@@ -29,7 +29,7 @@ fn read_all_green_apples_req1() //Req 1
 fn read_all_red_apples_req2()  //Req 2
 {
     //Create a new deck
-    let mut rc : RedDeck = RedDeck {cards : Vec::new()};
+    let mut rc : RedDeck = RedDeck::empty();
 
     //Get the length before and after filling the deck.
     let b4  = rc.get_size();
@@ -43,8 +43,8 @@ fn read_all_red_apples_req2()  //Req 2
 fn shuffle_both_decks_req3()  //Req 3
 {
     //Makes new instances of the decks
-    let mut rd = RedDeck{ cards : Vec::new()};
-    let mut gd= GreenDeck{ cards : Vec::new()};
+    let mut rd = RedDeck::empty();
+    let mut gd= GreenDeck::empty();
 
     //Init all decks from files
     let _ = rd.read_cards();
@@ -87,7 +87,7 @@ fn deal7_red_apples_to_each_player_req4()  //Req 4
     }
 
     //Generate a dummy deck for refilling
-    let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
+    let mut dummy_deck : RedDeck = RedDeck::empty();
     
     //Add some dummy cards to it.
     for _d in 0..(p_list.len() * 14)-1
@@ -152,7 +152,7 @@ fn allow_players_to_discard_their_hands_before_phase_a() //Idk which requirement
     let mut dummy_player = player_factory(0, true, true);
 
     //Skapa red deck
-    let mut red_deck = RedDeck {cards: Vec::new()};
+    let mut red_deck = RedDeck::empty();
 
     //Skapa Discard
     let mut discard_deck = discard_factory();
@@ -188,7 +188,7 @@ fn green_apple_drawn_and_shown_to_everyone_req6()  //Req 6
     assert_eq!(dummy1.get_desc(), dummy2.get_desc());
 
     //Create a new deck for this test.
-    let mut g_deck: GreenDeck = GreenDeck{cards: Vec::new()};
+    let mut g_deck: GreenDeck = GreenDeck::empty();
     g_deck.read_cards();
     g_deck.shuffle();
 
@@ -417,7 +417,7 @@ fn all_players_draw_up_to_seven_req12()  //Req 12 (Literally just Req4 but we st
         p_list.push(p);
     }
 
-    let mut dummy_deck : RedDeck = RedDeck{ cards: Vec::new()};
+    let mut dummy_deck : RedDeck = RedDeck::empty();
 
     //Generate a dummy deck for refilling
     for _d in 0.. (p_list.len() * 7)
@@ -489,7 +489,7 @@ fn check_for_winner_4p_req14a()  //Req 14
     assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
-    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let mut g_deck = GreenDeck::empty();
     let _ = g_deck.read_cards();
     g_deck = g_deck.shuffle();
 
@@ -519,7 +519,7 @@ fn check_for_winner_5p_req14a()
     assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
-    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let mut g_deck = GreenDeck::empty();
     let _ = g_deck.read_cards();
     g_deck = g_deck.shuffle();
 
@@ -549,7 +549,7 @@ fn check_for_winner_6p_req14a()
     assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
-    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let mut g_deck = GreenDeck::empty();
     let _ = g_deck.read_cards();
     g_deck = g_deck.shuffle();
 
@@ -579,7 +579,7 @@ fn check_for_winner_7p_req14a()
     assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
-    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let mut g_deck = GreenDeck::empty();
     let _ = g_deck.read_cards();
     g_deck = g_deck.shuffle();
 
@@ -609,7 +609,7 @@ fn check_for_winner_8p_req14a()
     assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
-    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let mut g_deck = GreenDeck::empty();
     let _ = g_deck.read_cards();
     g_deck = g_deck.shuffle();
 
@@ -639,7 +639,7 @@ fn check_for_winner_8plus_req14a()
     assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
-    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let mut g_deck = GreenDeck::empty();
     let _ = g_deck.read_cards();
     g_deck = g_deck.shuffle();
     
@@ -669,7 +669,7 @@ fn check_for_winner_custom_req14b()
     assert_ne!(true, check_winner(&p_list, &default_settings()));
 
     //Create a dummy green deck
-    let mut g_deck = GreenDeck{cards:Vec::new()};
+    let mut g_deck = GreenDeck::empty();
     let _ = g_deck.read_cards();
     g_deck = g_deck.shuffle();
     
@@ -702,8 +702,8 @@ fn test_if_deck_factories_works()
     assert!(g_deck.get_size() > 1);
     assert!(r_deck.get_size() > 1);
 
-    let mut dummy_g = GreenDeck{cards: Vec::new()};
-    let mut dummy_r = RedDeck{cards: Vec::new()};
+    let mut dummy_g = GreenDeck::empty();
+    let mut dummy_r = RedDeck::empty();
 
     _ = dummy_g.read_cards();
     _ = dummy_r.read_cards();

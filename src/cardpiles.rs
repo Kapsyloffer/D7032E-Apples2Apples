@@ -11,12 +11,12 @@ pub trait Setup
 #[derive(Clone)]
 pub struct RedDeck
 {
-    pub (crate) cards : Vec<RedCard>
+    cards : Vec<RedCard>
 }
 
 pub struct GreenDeck
 {
-    pub (crate) cards : Vec<GreenCard>
+    cards : Vec<GreenCard>
 }
 
 pub struct Discard
@@ -138,6 +138,11 @@ impl RedDeck
     {
         return self.cards.clone();
     }
+
+    pub fn empty() -> RedDeck
+    {
+        return RedDeck { cards: Vec::new() };
+    }
 }
 
 impl GreenDeck
@@ -182,6 +187,11 @@ impl GreenDeck
     pub fn get_deck(&self) -> Vec<GreenCard>
     {
         return self.cards.clone();
+    }
+
+    pub fn empty() -> GreenDeck
+    {
+        return GreenDeck { cards: Vec::new() };
     }
 }
 
