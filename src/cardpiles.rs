@@ -39,11 +39,7 @@ impl Setup for GreenDeck
                 let parts: Vec<&str> = line_str.splitn(2, " -").collect();
                 if parts.len() == 2 
                 {
-                    let new_green = GreenCard 
-                    {
-                        title: parts[0].to_string(),
-                        desc: parts[1].to_string(),
-                    };
+                    let new_green = greencard_factory(parts[0].to_string(), parts[1].to_string());
                     new_deck.push(new_green);
                 } 
                 else 
@@ -79,11 +75,7 @@ impl Setup for RedDeck
                 let parts: Vec<&str> = line_str.splitn(2, " -").collect();
                 if parts.len() == 2 
                 {
-                    let new_red = RedCard 
-                    {
-                        title: parts[0].to_string(),
-                        desc: parts[1].to_string(),
-                    };
+                    let new_red = redcard_factory(parts[0].to_string(), parts[1].to_string());
                     self.add_to_deck(new_red);
                 } 
                 else 

@@ -92,7 +92,7 @@ fn deal7_red_apples_to_each_player_req4()  //Req 4
     //Add some dummy cards to it.
     for _d in 0..(p_list.len() * 14)-1
     {
-        let dummy_card = RedCard{title: "Dummy card".to_string(), desc: "Fill card".to_string()};
+        let dummy_card = redcard_factory("Dummy card".to_string(),  "Fill card".to_string());
         dummy_deck.add_to_deck(dummy_card);
     }
 
@@ -181,11 +181,11 @@ fn allow_players_to_discard_their_hands_before_phase_a() //Idk which requirement
 #[test]
 fn green_apple_drawn_and_shown_to_everyone_req6()  //Req 6
 {
-    let dummy1 = GreenCard{title: "dummy".to_string(), desc: "thicc".to_string()};
-    let mut dummy2 = GreenCard{title: "dummy".to_string(), desc: "thicc".to_string()};
+    let dummy1 = greencard_factory("dummy".to_string(), "thicc".to_string());
+    let mut dummy2 = greencard_factory("dummy".to_string(), "thicc".to_string());
 
     //Check if both are the same right now.
-    assert_eq!(dummy1.desc, dummy2.desc);
+    assert_eq!(dummy1.get_desc(), dummy2.get_desc());
 
     //Create a new deck for this test.
     let mut g_deck: GreenDeck = GreenDeck{cards: Vec::new()};
@@ -196,7 +196,7 @@ fn green_apple_drawn_and_shown_to_everyone_req6()  //Req 6
     dummy2 = new_green(&mut g_deck); 
 
     //It changed
-    assert_ne!(dummy1.desc, dummy2.desc);
+    assert_ne!(dummy1.get_desc(), dummy2.get_desc());
     //And then we print it in Game.rs which makes this test kinda
     //Incomplete/useless but still. :P
 }
@@ -228,7 +228,7 @@ fn order_of_cards_randomized_before_shown_to_judge_req8()  //Req 8
     //Create 32 card entries.
     for i in 0..32
     {
-        cards.push((i, RedCard{title: format!("Dummy {}", i), desc: "Dummy card".to_string()}));
+        cards.push((i, redcard_factory(format!("Dummy {}", i) ,"Dummy card".to_string())));
     }
 
     //Cards before shuffle
@@ -259,16 +259,12 @@ fn judge_picks_card_winner_gets_green_apple_req10a()  //Req 10
     let mut p_list : Vec<Player> = Vec::new();
     let mut red_cards : Vec<(i32, RedCard)> = Vec::new();
 
-    let green : GreenCard = GreenCard
-    {
-        title: "Dummy green".to_string(), 
-        desc: "Despite the name he's actually quite smart".to_string()
-    };
+    let green : GreenCard = greencard_factory("Dummy green".to_string(), "Despite the name he's actually quite smart".to_string());
 
     for i in 0..6 as usize
     {
         p_list.push(player_factory(i as i32, true, true));
-        p_list[i].add_to_hand(RedCard{title : "[Dummy]".to_string(), desc: "Dummy card".to_string()});
+        p_list[i].add_to_hand(redcard_factory("[Dummy]".to_string(), "Dummy card".to_string()));
     }
     let j : Player = p_list[0].clone();
      //Have them all play their card into the red cards pile.
@@ -379,7 +375,7 @@ fn all_red_apples_go_to_discard_req11()  //Req 11
     //Give them all one dummy card
     for p in p_list.iter_mut()
     {
-        p.add_to_hand(RedCard{title: "[dummy card]".to_string(), desc: "dummy card".to_string()});
+        p.add_to_hand(redcard_factory("[Dummy]".to_string(), "Dummy card".to_string()));
     }
 
     //Have them all play their card into the red cards pile.
@@ -413,7 +409,7 @@ fn all_players_draw_up_to_seven_req12()  //Req 12 (Literally just Req4 but we st
        //give each player a random hand of 0 to 7 cards
         for _x in 1..rand::thread_rng().gen_range(1..7) 
         {
-            let new_card = RedCard{title: "Test".to_string(), desc : "Testcard".to_string()};
+            let new_card = redcard_factory("[Dummy]".to_string(), "Dummy card".to_string());
             p.add_to_hand(new_card);
         }
 
@@ -426,7 +422,7 @@ fn all_players_draw_up_to_seven_req12()  //Req 12 (Literally just Req4 but we st
     //Generate a dummy deck for refilling
     for _d in 0.. (p_list.len() * 7)
     {
-        let dummy_card = RedCard{title: "Dummy card".to_string(), desc: "Fill card".to_string()};
+        let dummy_card = redcard_factory("[Dummy]".to_string(), "Dummy card".to_string());
         dummy_deck.add_to_deck(dummy_card);
     }
 
