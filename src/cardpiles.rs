@@ -11,17 +11,17 @@ pub trait Setup
 #[derive(Clone)]
 pub struct RedDeck
 {
-    pub cards : Vec<RedCard>
+    cards : Vec<RedCard>
 }
 
 pub struct GreenDeck
 {
-    pub cards : Vec<GreenCard>
+    cards : Vec<GreenCard>
 }
 
 pub struct Discard
 {
-    pub cards : Vec<RedCard>
+    cards : Vec<RedCard>
 }
 
 impl Setup for GreenDeck
@@ -39,11 +39,7 @@ impl Setup for GreenDeck
                 let parts: Vec<&str> = line_str.splitn(2, " -").collect();
                 if parts.len() == 2 
                 {
-                    let new_green = GreenCard 
-                    {
-                        title: parts[0].to_string(),
-                        desc: parts[1].to_string(),
-                    };
+                    let new_green = greencard_factory(parts[0].to_string(), parts[1].to_string());
                     new_deck.push(new_green);
                 } 
                 else 
@@ -79,11 +75,7 @@ impl Setup for RedDeck
                 let parts: Vec<&str> = line_str.splitn(2, " -").collect();
                 if parts.len() == 2 
                 {
-                    let new_red = RedCard 
-                    {
-                        title: parts[0].to_string(),
-                        desc: parts[1].to_string(),
-                    };
+                    let new_red = redcard_factory(parts[0].to_string(), parts[1].to_string());
                     self.add_to_deck(new_red);
                 } 
                 else 
@@ -103,11 +95,7 @@ impl Setup for RedDeck
 
 impl RedDeck
 {
-    pub fn get_top_card_title(&self, index : usize) -> String
-    {
-        return self.cards[index].get_title().to_string();
-    }
-    pub fn draw (&mut self) -> RedCard
+   pub fn draw (&mut self) -> RedCard
     {
         //self.shuffle(); //fixes the non-random draw issue, HOWEVER IT BREAKS MY TESTS REEEE
         let card = self.cards.remove(0);
@@ -139,10 +127,31 @@ impl RedDeck
     {
         self.cards.push(rc);
     }
+
+    pub fn get_size(&self) -> usize
+    {
+        return self.cards.len();
+    }
+
+    //USED FOR TESTING
+    pub fn get_deck(&self) -> Vec<RedCard>
+    {
+        return self.cards.clone();
+    }
+
+    pub fn empty() -> RedDeck
+    {
+        return RedDeck { cards: Vec::new() };
+    }
 }
 
 impl GreenDeck
 {
+    pub fn get_title_of_top_card(&self) -> String
+    {
+        return self.cards[0].get_title();
+    }
+
     pub fn shuffle (&mut self) -> GreenDeck
     {
         //Fisher Yates shuffle algorithm
@@ -168,6 +177,22 @@ impl GreenDeck
     {
         return self.cards.remove(0);
     }
+
+    pub fn get_size(&self) -> usize
+    {
+        return self.cards.len();
+    }
+
+    //USED FOR TESTING
+    pub fn get_deck(&self) -> Vec<GreenCard>
+    {
+        return self.cards.clone();
+    }
+
+    pub fn empty() -> GreenDeck
+    {
+        return GreenDeck { cards: Vec::new() };
+    }
 }
 
 impl Discard
@@ -181,4 +206,29 @@ impl Discard
     {
         return self.cards.len();
     }
+}
+
+//Create a new GreenDeck
+pub fn green_deck_factory() -> GreenDeck
+{
+    let mut g_deck = GreenDeck { cards: Vec::new() };
+    //Req 1. Read all of the green apples
+    _ = g_deck.read_cards();
+    //Req 3. Shuffle both of the decks 
+    return g_deck.shuffle();
+}
+
+//Create a new RedDeck
+pub fn red_deck_factory() -> RedDeck
+{
+    let mut r_deck = RedDeck { cards: Vec::new() };
+    //Req 2. Read all of the red apples 
+    _ = r_deck.read_cards();
+    //Req 3. Shuffle both of the decks
+    return r_deck.shuffle();
+}
+
+pub fn discard_factory() -> Discard
+{
+    return Discard { cards: Vec::new() };
 }
