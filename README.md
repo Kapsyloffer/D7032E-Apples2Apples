@@ -1,5 +1,7 @@
 # D7032E-Apples2Apples
 
+Jag fick en 4 let's goooooo!!
+
 ## How do install Rust and run the program:
 
 ---
